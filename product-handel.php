@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ProductHandel
  * Description: Simple e-commerce plugin with PayPal Standard integration. No cart — buy directly.
- * Version: 1.0.3
+ * Version: 1.2.0
  * Author: Gavin Graham
  * License: GPL v2 or later
  * Text Domain: product-handel
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('PRODUCT_HANDEL_VERSION', '1.0.3');
+define('PRODUCT_HANDEL_VERSION', '1.2.0');
 define('PRODUCT_HANDEL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PRODUCT_HANDEL_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -31,6 +31,7 @@ class Product_Handel {
         register_activation_hook(__FILE__, array($this, 'activate'));
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
         add_action('init', array($this, 'init'));
+        add_action('plugins_loaded', array($this, 'maybe_upgrade'));
     }
 
     private function load_dependencies() {
@@ -41,6 +42,7 @@ class Product_Handel {
         require_once PRODUCT_HANDEL_PLUGIN_DIR . 'includes/class-paypal-handler.php';
         require_once PRODUCT_HANDEL_PLUGIN_DIR . 'includes/class-ipn-listener.php';
         require_once PRODUCT_HANDEL_PLUGIN_DIR . 'includes/class-post-payment.php';
+        require_once PRODUCT_HANDEL_PLUGIN_DIR . 'includes/class-invoice-page.php';
     }
 
     public function init() {
@@ -50,6 +52,7 @@ class Product_Handel {
         Product_Handel_PayPal_Handler::get_instance();
         Product_Handel_IPN_Listener::get_instance();
         Product_Handel_Post_Payment::get_instance();
+        Product_Handel_Invoice_Page::get_instance();
     }
 
     public function activate() {
@@ -64,10 +67,23 @@ class Product_Handel {
         add_option('product_handel_sandbox_mode', '1');
         add_option('product_handel_test_mode', '0');
         add_option('product_handel_create_user', '0');
+        add_option('product_handel_show_password_invoice', '1');
     }
 
     public function deactivate() {
         flush_rewrite_rules();
+    }
+
+    public function maybe_upgrade() {
+        $current_version = get_option('product_handel_db_version', '1.0.0');
+
+        if (version_compare($current_version, '1.1.0', '<')) {
+            // Upgrade to 1.1.0: add invoice page columns
+            Product_Handel_Order_Manager::create_table();
+            add_option('product_handel_show_password_invoice', '1');
+            flush_rewrite_rules();
+            update_option('product_handel_db_version', '1.1.0');
+        }
     }
 }
 

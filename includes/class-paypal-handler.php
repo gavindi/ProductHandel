@@ -60,6 +60,10 @@ class Product_Handel_PayPal_Handler {
             'currency'    => $currency,
         ));
 
+        // Generate access token for invoice page
+        $access_token = Product_Handel_Order_Manager::generate_access_token($order_id);
+        $invoice_url = home_url('/invoice/' . $access_token);
+
         // Test mode: skip PayPal, mark order completed immediately
         if (get_option('product_handel_test_mode', 0)) {
             Product_Handel_Order_Manager::update_order($order_id, array(
@@ -67,7 +71,7 @@ class Product_Handel_PayPal_Handler {
                 'transaction_id' => 'TEST-' . $order_id . '-' . time(),
             ));
             do_action('product_handel_payment_completed', $order_id, array());
-            wp_redirect($return_url);
+            wp_redirect($invoice_url);
             exit;
         }
 
@@ -82,7 +86,7 @@ class Product_Handel_PayPal_Handler {
             'item_number'   => $product_id,
             'amount'        => $price,
             'currency_code' => $currency,
-            'return'        => $return_url,
+            'return'        => $invoice_url,
             'cancel_return' => $cancel_url,
             'notify_url'    => home_url('/?product_handel_ipn=1'),
             'custom'        => $order_id,

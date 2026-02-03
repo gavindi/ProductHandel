@@ -78,6 +78,11 @@ class Product_Handel_Post_Payment {
 
         $password = wp_generate_password(12, true, false);
 
+        // Store encrypted password for invoice display
+        if (get_option('product_handel_show_password_invoice', 1)) {
+            Product_Handel_Order_Manager::store_temp_password($order->id, $password);
+        }
+
         $user_id = wp_insert_user(array(
             'user_login'   => $username,
             'user_email'   => $order->buyer_email,
