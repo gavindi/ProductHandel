@@ -145,6 +145,14 @@ class Product_Handel_Post_Type {
             'side',
             'default'
         );
+        add_meta_box(
+            'ph_product_key_settings',
+            'License Key Settings',
+            array($this, 'render_key_settings_meta_box'),
+            'ph_product',
+            'side',
+            'default'
+        );
     }
 
     public function render_price_meta_box($post) {
@@ -169,6 +177,29 @@ class Product_Handel_Post_Type {
         }
     }
 
+    public function render_key_settings_meta_box($post) {
+        $enabled = get_post_meta($post->ID, '_ph_generate_license_key', true);
+        $salt = get_post_meta($post->ID, '_ph_license_key_salt', true);
+        $random_salt = wp_generate_password(32, false);
+        ?>
+        <p>
+            <label>
+                <input type="checkbox" name="ph_generate_license_key" value="1" <?php checked(1, $enabled); ?> />
+                Generate license key for buyers
+            </label>
+        </p>
+        <p>
+            <label for="ph_license_key_salt">License Key Salt:</label>
+            <input type="text" name="ph_license_key_salt" id="ph_license_key_salt"
+                   value="<?php echo esc_attr($salt); ?>" style="width: 100%;" />
+        </p>
+        <p>
+            <button type="button" class="button" onclick="document.getElementById('ph_license_key_salt').value = '<?php echo esc_js($random_salt); ?>';">Generate Salt</button>
+        </p>
+        <p class="description">The license key is generated from buyer email + this salt. Keep the salt secret.</p>
+        <?php
+    }
+
     public function save_product_meta($post_id) {
         if (!isset($_POST['ph_price_nonce']) ||
             !wp_verify_nonce($_POST['ph_price_nonce'], 'ph_save_price')) {
@@ -182,6 +213,14 @@ class Product_Handel_Post_Type {
         }
         if (isset($_POST['ph_product_price'])) {
             update_post_meta($post_id, '_ph_product_price', sanitize_text_field($_POST['ph_product_price']));
+        }
+
+        // Save license key settings
+        $generate_key = isset($_POST['ph_generate_license_key']) ? 1 : 0;
+        update_post_meta($post_id, '_ph_generate_license_key', $generate_key);
+
+        if (isset($_POST['ph_license_key_salt'])) {
+            update_post_meta($post_id, '_ph_license_key_salt', sanitize_text_field($_POST['ph_license_key_salt']));
         }
     }
 

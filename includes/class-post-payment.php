@@ -32,6 +32,16 @@ class Product_Handel_Post_Payment {
         if (get_option('product_handel_create_user', 0)) {
             $this->maybe_create_user($order, $product_title);
         }
+
+        // Generate license key if enabled for this product
+        $generate_key = get_post_meta($order->product_id, '_ph_generate_license_key', true);
+        if ($generate_key) {
+            $salt = get_post_meta($order->product_id, '_ph_license_key_salt', true);
+            if ($salt) {
+                $license_key = Product_Handel_Order_Manager::generate_license_key($order->buyer_email, $salt);
+                Product_Handel_Order_Manager::update_order($order_id, array('license_key' => $license_key));
+            }
+        }
     }
 
     private function send_purchase_email($order, $product_title) {

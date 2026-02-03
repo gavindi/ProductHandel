@@ -2,6 +2,18 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.4.0] - 2026-02-03
+
+### Added
+- **License key generation** - Products can now generate unique license keys for buyers
+- New "License Key Settings" meta box on product edit screen with checkbox to enable and salt field
+- License keys are generated from buyer email + product salt using SHA-256 hash
+- License keys displayed in XXXX-XXXX-XXXX-XXXX format on the invoice page
+- `generate_license_key()` method in Order Manager for deterministic key generation
+
+### Changed
+- Database schema extended with `license_key` column in orders table
+
 ## [1.3.0] - 2026-02-03
 
 ### Added

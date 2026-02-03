@@ -193,6 +193,16 @@ class Product_Handel_Invoice_Page {
                 <?php endif; ?>
             <?php endif; ?>
 
+            <?php if (!empty($order->license_key)): ?>
+            <div class="ph-invoice-section ph-invoice-license">
+                <h2>Your License Key</h2>
+                <div class="ph-license-key">
+                    <code><?php echo esc_html($order->license_key); ?></code>
+                </div>
+                <p class="ph-invoice-note">Save this license key for your records.</p>
+            </div>
+            <?php endif; ?>
+
             <div class="ph-invoice-actions">
                 <button type="button" class="ph-button" onclick="window.print();">Print Receipt</button>
                 <a href="<?php echo esc_url($home_url); ?>" class="ph-button">Return to Site</a>
@@ -413,6 +423,26 @@ class Product_Handel_Invoice_Page {
             font-family: monospace;
             font-size: 14px;
             border: 1px solid #ddd;
+        }
+        .ph-invoice-license {
+            background: #e8f4f8;
+        }
+        .ph-license-key {
+            text-align: center;
+            padding: 15px;
+            background: #fff;
+            border: 2px dashed #0073aa;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        .ph-license-key code {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #0073aa;
+            background: none;
+            border: none;
+            padding: 0;
         }
         .ph-password {
             font-weight: bold;

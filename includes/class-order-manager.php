@@ -24,6 +24,7 @@ class Product_Handel_Order_Manager {
             access_token_expires datetime DEFAULT NULL,
             temp_password text DEFAULT NULL,
             temp_password_expires datetime DEFAULT NULL,
+            license_key varchar(64) DEFAULT NULL,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY  (id),
@@ -58,7 +59,7 @@ class Product_Handel_Order_Manager {
         $update = array();
         $formats = array();
 
-        foreach (array('status', 'transaction_id', 'payment_data', 'buyer_name', 'buyer_email') as $field) {
+        foreach (array('status', 'transaction_id', 'payment_data', 'buyer_name', 'buyer_email', 'license_key') as $field) {
             if (isset($data[$field])) {
                 if ($field === 'buyer_email') {
                     $update[$field] = sanitize_email($data[$field]);
@@ -208,6 +209,13 @@ class Product_Handel_Order_Manager {
             array('%s', '%s'),
             array('%d')
         );
+    }
+
+    public static function generate_license_key($email, $salt) {
+        $hash = hash('sha256', strtolower(trim($email)) . $salt);
+        // Format as XXXX-XXXX-XXXX-XXXX (first 16 chars, uppercased)
+        $key = strtoupper(substr($hash, 0, 16));
+        return substr($key, 0, 4) . '-' . substr($key, 4, 4) . '-' . substr($key, 8, 4) . '-' . substr($key, 12, 4);
     }
 
     private static function get_encryption_key() {
