@@ -160,12 +160,13 @@ class Product_Handel_Settings {
                         <th>Amount</th>
                         <th>Status</th>
                         <th>Transaction ID</th>
+                        <th>Invoice</th>
                         <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($orders)): ?>
-                        <tr><td colspan="8">No orders yet.</td></tr>
+                        <tr><td colspan="9">No orders yet.</td></tr>
                     <?php else: ?>
                         <?php foreach ($orders as $order): ?>
                             <tr>
@@ -186,6 +187,14 @@ class Product_Handel_Settings {
                                 <td><?php echo esc_html($order->currency . ' ' . number_format((float)$order->amount, 2)); ?></td>
                                 <td><span class="ph-status ph-status-<?php echo esc_attr($order->status); ?>"><?php echo esc_html(ucfirst($order->status)); ?></span></td>
                                 <td><?php echo esc_html($order->transaction_id); ?></td>
+                                <td>
+                                    <?php if (!empty($order->access_token)): ?>
+                                        <?php $invoice_url = home_url('/invoice/' . $order->access_token); ?>
+                                        <a href="<?php echo esc_url($invoice_url); ?>" target="_blank">View</a>
+                                    <?php else: ?>
+                                        —
+                                    <?php endif; ?>
+                                </td>
                                 <td><?php echo esc_html($order->created_at); ?></td>
                             </tr>
                         <?php endforeach; ?>

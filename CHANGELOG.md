@@ -2,6 +2,11 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.4.1] - 2026-02-03
+
+### Added
+- Invoice URL column on Product Orders admin page with "View" link to open invoice
+
 ## [1.4.0] - 2026-02-03
 
 ### Added
