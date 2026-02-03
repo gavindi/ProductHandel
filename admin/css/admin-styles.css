@@ -9,3 +9,46 @@
 .ph-status-completed { background: #d4edda; color: #155724; }
 .ph-status-failed { background: #f8d7da; color: #721c24; }
 .ph-status-refunded { background: #fff3cd; color: #856404; }
+
+/* Edit Modal */
+.ph-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ph-modal-content {
+    background: #fff;
+    padding: 20px 24px;
+    border-radius: 4px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.ph-modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+.ph-modal-content label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+.ph-modal-content input[type="text"],
+.ph-modal-content input[type="email"] {
+    width: 100%;
+}
+.ph-modal-content p {
+    margin-bottom: 15px;
+}
+.ph-modal-content .submit {
+    margin-bottom: 0;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+}

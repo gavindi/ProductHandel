@@ -2,6 +2,13 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.3.0] - 2026-02-03
+
+### Added
+- **Edit buyer information** - Admins can now edit buyer name and email address from the Product Orders screen
+- Modal popup for inline editing with AJAX save
+- `update_order()` method now supports `buyer_name` and `buyer_email` fields
+
 ## [1.2.0] - 2026-02-03
 
 ### Added

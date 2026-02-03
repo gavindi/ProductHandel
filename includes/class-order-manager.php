@@ -58,9 +58,15 @@ class Product_Handel_Order_Manager {
         $update = array();
         $formats = array();
 
-        foreach (array('status', 'transaction_id', 'payment_data') as $field) {
+        foreach (array('status', 'transaction_id', 'payment_data', 'buyer_name', 'buyer_email') as $field) {
             if (isset($data[$field])) {
-                $update[$field] = $field === 'payment_data' ? $data[$field] : sanitize_text_field($data[$field]);
+                if ($field === 'buyer_email') {
+                    $update[$field] = sanitize_email($data[$field]);
+                } elseif ($field === 'payment_data') {
+                    $update[$field] = $data[$field];
+                } else {
+                    $update[$field] = sanitize_text_field($data[$field]);
+                }
                 $formats[] = '%s';
             }
         }

@@ -36,6 +36,7 @@ class Product_Handel_Settings {
         add_action('admin_menu', array($this, 'add_menus'));
         add_action('admin_init', array($this, 'register_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
+        add_action('wp_ajax_ph_update_order', array($this, 'ajax_update_order'));
     }
 
     public function enqueue_admin_styles($hook) {
@@ -170,7 +171,17 @@ class Product_Handel_Settings {
                             <tr>
                                 <td><?php echo esc_html($order->id); ?></td>
                                 <td><?php echo esc_html(get_the_title($order->product_id)); ?></td>
-                                <td><?php echo esc_html($order->buyer_name); ?></td>
+                                <td>
+                                    <?php echo esc_html($order->buyer_name); ?>
+                                    <div class="row-actions">
+                                        <span class="edit">
+                                            <a href="#" class="ph-edit-order"
+                                               data-order-id="<?php echo esc_attr($order->id); ?>"
+                                               data-buyer-name="<?php echo esc_attr($order->buyer_name); ?>"
+                                               data-buyer-email="<?php echo esc_attr($order->buyer_email); ?>">Edit</a>
+                                        </span>
+                                    </div>
+                                </td>
                                 <td><?php echo esc_html($order->buyer_email); ?></td>
                                 <td><?php echo esc_html($order->currency . ' ' . number_format((float)$order->amount, 2)); ?></td>
                                 <td><span class="ph-status ph-status-<?php echo esc_attr($order->status); ?>"><?php echo esc_html(ucfirst($order->status)); ?></span></td>
@@ -182,6 +193,98 @@ class Product_Handel_Settings {
                 </tbody>
             </table>
         </div>
+
+        <div id="ph-edit-modal" class="ph-modal" style="display:none;">
+            <div class="ph-modal-content">
+                <h2>Edit Order</h2>
+                <form id="ph-edit-form">
+                    <input type="hidden" name="order_id" id="ph-edit-order-id">
+                    <?php wp_nonce_field('ph_edit_order', 'ph_edit_nonce'); ?>
+                    <p>
+                        <label for="ph-edit-buyer-name">Buyer Name</label>
+                        <input type="text" name="buyer_name" id="ph-edit-buyer-name" class="regular-text" required>
+                    </p>
+                    <p>
+                        <label for="ph-edit-buyer-email">Email Address</label>
+                        <input type="email" name="buyer_email" id="ph-edit-buyer-email" class="regular-text" required>
+                    </p>
+                    <p class="submit">
+                        <button type="submit" class="button button-primary">Save Changes</button>
+                        <button type="button" class="button ph-modal-close">Cancel</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <script>
+        jQuery(document).ready(function($) {
+            $('.ph-edit-order').on('click', function(e) {
+                e.preventDefault();
+                var $link = $(this);
+                $('#ph-edit-order-id').val($link.data('order-id'));
+                $('#ph-edit-buyer-name').val($link.data('buyer-name'));
+                $('#ph-edit-buyer-email').val($link.data('buyer-email'));
+                $('#ph-edit-modal').show();
+            });
+
+            $('.ph-modal-close').on('click', function() {
+                $('#ph-edit-modal').hide();
+            });
+
+            $('.ph-modal').on('click', function(e) {
+                if (e.target === this) $(this).hide();
+            });
+
+            $('#ph-edit-form').on('submit', function(e) {
+                e.preventDefault();
+                var $btn = $(this).find('button[type="submit"]');
+                $btn.prop('disabled', true).text('Saving...');
+
+                $.post(ajaxurl, {
+                    action: 'ph_update_order',
+                    order_id: $('#ph-edit-order-id').val(),
+                    buyer_name: $('#ph-edit-buyer-name').val(),
+                    buyer_email: $('#ph-edit-buyer-email').val(),
+                    _wpnonce: $('#ph_edit_nonce').val()
+                }, function(response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert(response.data || 'Error saving changes');
+                        $btn.prop('disabled', false).text('Save Changes');
+                    }
+                }).fail(function() {
+                    alert('Request failed. Please try again.');
+                    $btn.prop('disabled', false).text('Save Changes');
+                });
+            });
+        });
+        </script>
         <?php
+    }
+
+    public function ajax_update_order() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Permission denied');
+        }
+
+        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'ph_edit_order')) {
+            wp_send_json_error('Invalid security token');
+        }
+
+        $order_id = intval($_POST['order_id'] ?? 0);
+        $buyer_name = sanitize_text_field($_POST['buyer_name'] ?? '');
+        $buyer_email = sanitize_email($_POST['buyer_email'] ?? '');
+
+        if (!$order_id || empty($buyer_name) || empty($buyer_email)) {
+            wp_send_json_error('Missing required fields');
+        }
+
+        Product_Handel_Order_Manager::update_order($order_id, array(
+            'buyer_name' => $buyer_name,
+            'buyer_email' => $buyer_email,
+        ));
+
+        wp_send_json_success();
     }
 }
