@@ -1,0 +1,11 @@
+.ph-status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.ph-status-pending { background: #f0f0f0; color: #666; }
+.ph-status-completed { background: #d4edda; color: #155724; }
+.ph-status-failed { background: #f8d7da; color: #721c24; }
+.ph-status-refunded { background: #fff3cd; color: #856404; }
