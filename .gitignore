@@ -10,6 +10,7 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+ProductHandel.code-workspace
 
 # Logs
 *.log
