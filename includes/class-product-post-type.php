@@ -19,19 +19,20 @@ class Product_Handel_Post_Type {
         add_action('save_post_ph_product', array($this, 'save_product_meta'));
         add_filter('manage_ph_product_posts_columns', array($this, 'add_price_column'));
         add_action('manage_ph_product_posts_custom_column', array($this, 'render_price_column'), 10, 2);
-        add_action('wp_enqueue_scripts', array($this, 'hide_product_meta'));
+        add_action('wp_head', array($this, 'product_page_styles'));
         self::register_block_template();
     }
 
-    public function hide_product_meta() {
+    public function product_page_styles() {
         if (is_singular('ph_product')) {
-            wp_add_inline_style('product-handel-frontend',
-                '.single-ph_product .entry-meta, .single-ph_product .post-meta, ' .
-                '.single-ph_product .byline, .single-ph_product .posted-on, ' .
-                '.single-ph_product .cat-links, .single-ph_product .tags-links, ' .
-                '.single-ph_product .entry-footer, .single-ph_product .post-date, ' .
-                '.single-ph_product .wp-block-post-date, .single-ph_product .wp-block-post-author { display: none !important; }'
-            );
+            echo '<style>
+                .single-ph_product .entry-meta, .single-ph_product .post-meta,
+                .single-ph_product .byline, .single-ph_product .posted-on,
+                .single-ph_product .cat-links, .single-ph_product .tags-links,
+                .single-ph_product .entry-footer, .single-ph_product .post-date,
+                .single-ph_product .wp-block-post-date, .single-ph_product .wp-block-post-author { display: none !important; }
+                .wp-post-image, img.attachment-post-thumbnail { max-width: 320px !important; height: auto !important; display: block !important; margin-left: auto !important; margin-right: auto !important; }
+            </style>';
         }
     }
 

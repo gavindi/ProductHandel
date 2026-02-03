@@ -2,6 +2,11 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.4.2] - 2026-02-04
+
+### Changed
+- Single product page featured image now displays at 320px max-width, centered
+
 ## [1.4.1] - 2026-02-03
 
 ### Added

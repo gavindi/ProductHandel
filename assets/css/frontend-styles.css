@@ -88,3 +88,9 @@
     background: #fff0f0;
     border-radius: 4px;
 }
+
+/* Single product page featured image */
+img.attachment-post-thumbnail.size-post-thumbnail.wp-post-image {
+    max-width: 256px !important;
+    height: auto !important;
+}
