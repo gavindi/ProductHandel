@@ -69,6 +69,12 @@ class Product_Handel_Post_Payment {
             $message .= sprintf("\nYour License Key: %s\n", $license_key);
         }
 
+        $download_url = get_post_meta($order->product_id, '_ph_download_url', true);
+        $show_download = get_post_meta($order->product_id, '_ph_show_download_link', true);
+        if ($download_url && $show_download) {
+            $message .= sprintf("\nDownload Your Product: %s\n", $download_url);
+        }
+
         $message .= sprintf(
             "\nIf you have any questions, please contact us.\n\n" .
             "— %s",

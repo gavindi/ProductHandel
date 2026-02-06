@@ -154,6 +154,14 @@ class Product_Handel_Post_Type {
             'side',
             'default'
         );
+        add_meta_box(
+            'ph_product_download_settings',
+            'Download Settings',
+            array($this, 'render_download_settings_meta_box'),
+            'ph_product',
+            'side',
+            'default'
+        );
     }
 
     public function render_price_meta_box($post) {
@@ -201,6 +209,24 @@ class Product_Handel_Post_Type {
         <?php
     }
 
+    public function render_download_settings_meta_box($post) {
+        $download_url = get_post_meta($post->ID, '_ph_download_url', true);
+        $show_download = get_post_meta($post->ID, '_ph_show_download_link', true);
+        ?>
+        <p>
+            <label for="ph_download_url">Download URL:</label>
+            <input type="url" name="ph_download_url" id="ph_download_url"
+                   value="<?php echo esc_attr($download_url); ?>" style="width: 100%;" />
+        </p>
+        <p>
+            <label>
+                <input type="checkbox" name="ph_show_download_link" value="1" <?php checked(1, $show_download); ?> />
+                Show download link on invoice and email
+            </label>
+        </p>
+        <?php
+    }
+
     public function save_product_meta($post_id) {
         if (!isset($_POST['ph_price_nonce']) ||
             !wp_verify_nonce($_POST['ph_price_nonce'], 'ph_save_price')) {
@@ -223,6 +249,13 @@ class Product_Handel_Post_Type {
         if (isset($_POST['ph_license_key_salt'])) {
             update_post_meta($post_id, '_ph_license_key_salt', sanitize_text_field($_POST['ph_license_key_salt']));
         }
+
+        // Save download settings
+        if (isset($_POST['ph_download_url'])) {
+            update_post_meta($post_id, '_ph_download_url', esc_url_raw($_POST['ph_download_url']));
+        }
+        $show_download = isset($_POST['ph_show_download_link']) ? 1 : 0;
+        update_post_meta($post_id, '_ph_show_download_link', $show_download);
     }
 
     public function add_price_column($columns) {

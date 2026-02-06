@@ -2,6 +2,13 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.6.5] - 2026-02-07
+
+### Added
+- **Product download link** — New "Download Settings" meta box on the product edit screen with a URL field and checkbox
+- Download link displayed on the invoice page when enabled
+- Download link included in the purchase confirmation email when enabled
+
 ## [1.6.0] - 2026-02-06
 
 ### Added

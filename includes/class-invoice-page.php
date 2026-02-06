@@ -203,6 +203,19 @@ class Product_Handel_Invoice_Page {
             </div>
             <?php endif; ?>
 
+            <?php
+            $download_url = get_post_meta($order->product_id, '_ph_download_url', true);
+            $show_download = get_post_meta($order->product_id, '_ph_show_download_link', true);
+            if ($download_url && $show_download):
+            ?>
+            <div class="ph-invoice-section ph-invoice-download">
+                <h2>Download Your Product</h2>
+                <div class="ph-download-link">
+                    <a href="<?php echo esc_url($download_url); ?>" class="ph-button ph-button-primary">Download</a>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <div class="ph-invoice-actions">
                 <button type="button" class="ph-button" onclick="window.print();">Print Receipt</button>
                 <a href="<?php echo esc_url($home_url); ?>" class="ph-button">Return to Site</a>
@@ -443,6 +456,13 @@ class Product_Handel_Invoice_Page {
             background: none;
             border: none;
             padding: 0;
+        }
+        .ph-invoice-download {
+            background: #e8f4e8;
+        }
+        .ph-download-link {
+            text-align: center;
+            padding: 15px;
         }
         .ph-password {
             font-weight: bold;
