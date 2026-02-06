@@ -37,6 +37,7 @@ class Product_Handel_Settings {
         add_action('admin_init', array($this, 'register_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
         add_action('wp_ajax_ph_update_order', array($this, 'ajax_update_order'));
+        add_action('wp_ajax_ph_resend_invoice', array($this, 'ajax_resend_invoice'));
     }
 
     public function enqueue_admin_styles($hook) {
@@ -181,6 +182,13 @@ class Product_Handel_Settings {
                                                data-buyer-name="<?php echo esc_attr($order->buyer_name); ?>"
                                                data-buyer-email="<?php echo esc_attr($order->buyer_email); ?>">Edit</a>
                                         </span>
+                                        <?php if ($order->status === 'completed'): ?>
+                                        | <span class="resend">
+                                            <a href="#" class="ph-resend-invoice"
+                                               data-order-id="<?php echo esc_attr($order->id); ?>"
+                                               data-buyer-email="<?php echo esc_attr($order->buyer_email); ?>">Resend Invoice</a>
+                                        </span>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                                 <td><?php echo esc_html($order->buyer_email); ?></td>
@@ -244,6 +252,38 @@ class Product_Handel_Settings {
                 if (e.target === this) $(this).hide();
             });
 
+            $('.ph-resend-invoice').on('click', function(e) {
+                e.preventDefault();
+                var $link = $(this);
+                var email = $link.data('buyer-email');
+
+                if (!confirm('Resend invoice email to ' + email + '?')) {
+                    return;
+                }
+
+                var originalText = $link.text();
+                $link.css('pointer-events', 'none').text('Sending...');
+
+                $.post(ajaxurl, {
+                    action: 'ph_resend_invoice',
+                    order_id: $link.data('order-id'),
+                    _wpnonce: $('#ph_edit_nonce').val()
+                }, function(response) {
+                    if (response.success) {
+                        $link.text('Sent!');
+                        setTimeout(function() {
+                            $link.css('pointer-events', '').text(originalText);
+                        }, 2000);
+                    } else {
+                        alert(response.data || 'Error sending invoice');
+                        $link.css('pointer-events', '').text(originalText);
+                    }
+                }).fail(function() {
+                    alert('Request failed. Please try again.');
+                    $link.css('pointer-events', '').text(originalText);
+                });
+            });
+
             $('#ph-edit-form').on('submit', function(e) {
                 e.preventDefault();
                 var $btn = $(this).find('button[type="submit"]');
@@ -293,6 +333,35 @@ class Product_Handel_Settings {
             'buyer_name' => $buyer_name,
             'buyer_email' => $buyer_email,
         ));
+
+        wp_send_json_success();
+    }
+
+    public function ajax_resend_invoice() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Permission denied');
+        }
+
+        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'ph_edit_order')) {
+            wp_send_json_error('Invalid security token');
+        }
+
+        $order_id = intval($_POST['order_id'] ?? 0);
+        if (!$order_id) {
+            wp_send_json_error('Invalid order ID');
+        }
+
+        $order = Product_Handel_Order_Manager::get_order($order_id);
+        if (!$order) {
+            wp_send_json_error('Order not found');
+        }
+
+        if ($order->status !== 'completed') {
+            wp_send_json_error('Can only resend invoice for completed orders');
+        }
+
+        $product_title = get_the_title($order->product_id);
+        Product_Handel_Post_Payment::get_instance()->send_purchase_email($order, $product_title, $order->license_key);
 
         wp_send_json_success();
     }

@@ -2,6 +2,11 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.6.0] - 2026-02-06
+
+### Added
+- **Resend Invoice** button on each completed order in the Product Orders admin screen
+
 ## [1.5.0] - 2026-02-06
 
 ### Added

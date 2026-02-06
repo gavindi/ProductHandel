@@ -45,7 +45,7 @@ class Product_Handel_Post_Payment {
         }
     }
 
-    private function send_purchase_email($order, $product_title, $license_key = null) {
+    public function send_purchase_email($order, $product_title, $license_key = null) {
         $site_name = get_bloginfo('name');
         $subject = sprintf('Purchase Confirmation — %s', $product_title);
 
