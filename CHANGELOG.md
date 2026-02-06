@@ -2,6 +2,14 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.5.0] - 2026-02-06
+
+### Added
+- Purchase confirmation email now includes the license key when one has been generated for the product
+
+### Changed
+- License key generation now runs before the confirmation email is sent so the key is available to include
+
 ## [1.4.2] - 2026-02-04
 
 ### Changed

@@ -25,15 +25,8 @@ class Product_Handel_Post_Payment {
 
         $product_title = get_the_title($order->product_id);
 
-        // Send purchase confirmation email
-        $this->send_purchase_email($order, $product_title);
-
-        // Optionally create a WordPress user account
-        if (get_option('product_handel_create_user', 0)) {
-            $this->maybe_create_user($order, $product_title);
-        }
-
         // Generate license key if enabled for this product
+        $license_key = null;
         $generate_key = get_post_meta($order->product_id, '_ph_generate_license_key', true);
         if ($generate_key) {
             $salt = get_post_meta($order->product_id, '_ph_license_key_salt', true);
@@ -42,9 +35,17 @@ class Product_Handel_Post_Payment {
                 Product_Handel_Order_Manager::update_order($order_id, array('license_key' => $license_key));
             }
         }
+
+        // Send purchase confirmation email
+        $this->send_purchase_email($order, $product_title, $license_key);
+
+        // Optionally create a WordPress user account
+        if (get_option('product_handel_create_user', 0)) {
+            $this->maybe_create_user($order, $product_title);
+        }
     }
 
-    private function send_purchase_email($order, $product_title) {
+    private function send_purchase_email($order, $product_title, $license_key = null) {
         $site_name = get_bloginfo('name');
         $subject = sprintf('Purchase Confirmation — %s', $product_title);
 
@@ -55,15 +56,22 @@ class Product_Handel_Post_Payment {
             "  Product: %s\n" .
             "  Amount: %s %s\n" .
             "  Transaction ID: %s\n" .
-            "  Date: %s\n\n" .
-            "If you have any questions, please contact us.\n\n" .
-            "— %s",
+            "  Date: %s\n",
             $order->buyer_name,
             $product_title,
             $order->currency,
             number_format((float) $order->amount, 2),
             $order->transaction_id,
-            $order->created_at,
+            $order->created_at
+        );
+
+        if ($license_key) {
+            $message .= sprintf("\nYour License Key: %s\n", $license_key);
+        }
+
+        $message .= sprintf(
+            "\nIf you have any questions, please contact us.\n\n" .
+            "— %s",
             $site_name
         );
 
