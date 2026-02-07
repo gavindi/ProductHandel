@@ -9,9 +9,13 @@ A simple WordPress e-commerce plugin that lets you create and sell products with
 - Sandbox mode for testing with PayPal sandbox accounts
 - Test mode for development without PayPal
 - Automatic WordPress user account creation for buyers (optional)
-- Purchase confirmation emails
-- Order management in WordPress admin
+- Purchase confirmation emails with optional HTML formatting
+- Post-purchase invoice page with print-friendly styling
+- License key generation for products (SHA-256 based, displayed on invoice and in emails)
+- Product download links (displayed on invoice and in emails)
+- Order management in WordPress admin (edit buyer info, resend invoices, delete test orders)
 - Shortcode for embedding products on any page
+- Automatic database versioning and schema migration
 - Block theme compatible (Twenty Twenty-Three, Twenty Twenty-Four, etc.)
 
 ## Installation
@@ -52,6 +56,8 @@ Navigate to **Settings > ProductHandel** to configure:
 - **Sandbox Mode**: Enable to use PayPal sandbox for testing
 - **Test Mode**: Skip PayPal entirely and simulate successful payments (development only)
 - **Create User Account**: Automatically create a WordPress subscriber account for new buyers
+- **Show Password on Invoice**: Display the generated password on the invoice page when user account creation is enabled
+- **HTML Email**: Send styled HTML emails matching the invoice page design instead of plain text
 
 The settings page also displays your **IPN Listener URL** — configure this in your PayPal account under IPN notification settings.
 
@@ -61,7 +67,9 @@ The settings page also displays your **IPN Listener URL** — configure this in 
 2. Enter the product title and description
 3. Set a featured image (optional, displayed in shortcode)
 4. Enter the price in the **Product Price** meta box on the sidebar
-5. Publish the product
+5. Optionally enable **License Key Generation** and provide a salt in the License Key Settings meta box
+6. Optionally add a **Download Link** URL in the Download Settings meta box
+7. Publish the product
 
 ### Shortcode
 
@@ -78,18 +86,35 @@ Replace `123` with your product's ID. The shortcode displays:
 - Price
 - "Buy Now" button linking to the product page
 
-On the product page itself, customers see a purchase form with name and email fields, followed by a "Complete Purchase" button that initiates the PayPal payment flow.
+On the product page itself, customers see a purchase form with first name, last name, and email fields, followed by a "Complete Purchase" button that initiates the PayPal payment flow.
+
+### Invoice Page
+
+After a successful payment, buyers are redirected to a secure invoice page (`/invoice/{token}`) that displays:
+- Order details (product name, amount, transaction ID, purchase date)
+- Buyer information
+- License key (if enabled for the product)
+- Download link (if configured for the product)
+- Generated password (if user account creation and "Show Password on Invoice" are enabled)
+
+Invoice access tokens expire after 48 hours. The page uses AJAX polling to handle asynchronous PayPal IPN timing and includes print-friendly styling.
 
 ### Product Orders
 
 View all orders at **Product Orders** in the WordPress admin menu. Each order shows:
 - Order ID
 - Product name
-- Buyer name and email
+- Buyer first name, last name, and email
 - Amount and currency
 - Status (pending, completed, failed, refunded)
 - Transaction ID
+- Invoice link
 - Date
+
+Admins can also:
+- **Edit** buyer first name, last name, and email via an inline modal
+- **Resend Invoice** email for completed orders
+- **Delete** orders when test mode is enabled
 
 ## PayPal Setup
 
