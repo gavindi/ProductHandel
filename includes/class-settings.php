@@ -156,7 +156,8 @@ class Product_Handel_Settings {
                     <tr>
                         <th style="width:50px">ID</th>
                         <th>Product</th>
-                        <th>Buyer</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
                         <th>Email</th>
                         <th>Amount</th>
                         <th>Status</th>
@@ -167,19 +168,20 @@ class Product_Handel_Settings {
                 </thead>
                 <tbody>
                     <?php if (empty($orders)): ?>
-                        <tr><td colspan="9">No orders yet.</td></tr>
+                        <tr><td colspan="10">No orders yet.</td></tr>
                     <?php else: ?>
                         <?php foreach ($orders as $order): ?>
                             <tr>
                                 <td><?php echo esc_html($order->id); ?></td>
                                 <td><?php echo esc_html(get_the_title($order->product_id)); ?></td>
                                 <td>
-                                    <?php echo esc_html($order->buyer_name); ?>
+                                    <?php echo esc_html($order->buyer_first_name); ?>
                                     <div class="row-actions">
                                         <span class="edit">
                                             <a href="#" class="ph-edit-order"
                                                data-order-id="<?php echo esc_attr($order->id); ?>"
-                                               data-buyer-name="<?php echo esc_attr($order->buyer_name); ?>"
+                                               data-buyer-first-name="<?php echo esc_attr($order->buyer_first_name); ?>"
+                                               data-buyer-last-name="<?php echo esc_attr($order->buyer_last_name); ?>"
                                                data-buyer-email="<?php echo esc_attr($order->buyer_email); ?>">Edit</a>
                                         </span>
                                         <?php if ($order->status === 'completed'): ?>
@@ -191,6 +193,7 @@ class Product_Handel_Settings {
                                         <?php endif; ?>
                                     </div>
                                 </td>
+                                <td><?php echo esc_html($order->buyer_last_name); ?></td>
                                 <td><?php echo esc_html($order->buyer_email); ?></td>
                                 <td><?php echo esc_html($order->currency . ' ' . number_format((float)$order->amount, 2)); ?></td>
                                 <td><span class="ph-status ph-status-<?php echo esc_attr($order->status); ?>"><?php echo esc_html(ucfirst($order->status)); ?></span></td>
@@ -218,8 +221,12 @@ class Product_Handel_Settings {
                     <input type="hidden" name="order_id" id="ph-edit-order-id">
                     <?php wp_nonce_field('ph_edit_order', 'ph_edit_nonce'); ?>
                     <p>
-                        <label for="ph-edit-buyer-name">Buyer Name</label>
-                        <input type="text" name="buyer_name" id="ph-edit-buyer-name" class="regular-text" required>
+                        <label for="ph-edit-buyer-first-name">First Name</label>
+                        <input type="text" name="buyer_first_name" id="ph-edit-buyer-first-name" class="regular-text" required>
+                    </p>
+                    <p>
+                        <label for="ph-edit-buyer-last-name">Last Name</label>
+                        <input type="text" name="buyer_last_name" id="ph-edit-buyer-last-name" class="regular-text" required>
                     </p>
                     <p>
                         <label for="ph-edit-buyer-email">Email Address</label>
@@ -239,7 +246,8 @@ class Product_Handel_Settings {
                 e.preventDefault();
                 var $link = $(this);
                 $('#ph-edit-order-id').val($link.data('order-id'));
-                $('#ph-edit-buyer-name').val($link.data('buyer-name'));
+                $('#ph-edit-buyer-first-name').val($link.data('buyer-first-name'));
+                $('#ph-edit-buyer-last-name').val($link.data('buyer-last-name'));
                 $('#ph-edit-buyer-email').val($link.data('buyer-email'));
                 $('#ph-edit-modal').show();
             });
@@ -292,7 +300,8 @@ class Product_Handel_Settings {
                 $.post(ajaxurl, {
                     action: 'ph_update_order',
                     order_id: $('#ph-edit-order-id').val(),
-                    buyer_name: $('#ph-edit-buyer-name').val(),
+                    buyer_first_name: $('#ph-edit-buyer-first-name').val(),
+                    buyer_last_name: $('#ph-edit-buyer-last-name').val(),
                     buyer_email: $('#ph-edit-buyer-email').val(),
                     _wpnonce: $('#ph_edit_nonce').val()
                 }, function(response) {
@@ -322,16 +331,18 @@ class Product_Handel_Settings {
         }
 
         $order_id = intval($_POST['order_id'] ?? 0);
-        $buyer_name = sanitize_text_field($_POST['buyer_name'] ?? '');
-        $buyer_email = sanitize_email($_POST['buyer_email'] ?? '');
+        $buyer_first_name = sanitize_text_field($_POST['buyer_first_name'] ?? '');
+        $buyer_last_name  = sanitize_text_field($_POST['buyer_last_name'] ?? '');
+        $buyer_email      = sanitize_email($_POST['buyer_email'] ?? '');
 
-        if (!$order_id || empty($buyer_name) || empty($buyer_email)) {
+        if (!$order_id || empty($buyer_first_name) || empty($buyer_last_name) || empty($buyer_email)) {
             wp_send_json_error('Missing required fields');
         }
 
         Product_Handel_Order_Manager::update_order($order_id, array(
-            'buyer_name' => $buyer_name,
-            'buyer_email' => $buyer_email,
+            'buyer_first_name' => $buyer_first_name,
+            'buyer_last_name'  => $buyer_last_name,
+            'buyer_email'      => $buyer_email,
         ));
 
         wp_send_json_success();

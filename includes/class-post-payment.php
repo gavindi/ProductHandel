@@ -57,7 +57,7 @@ class Product_Handel_Post_Payment {
             "  Amount: %s %s\n" .
             "  Transaction ID: %s\n" .
             "  Date: %s\n",
-            $order->buyer_name,
+            trim($order->buyer_first_name . ' ' . $order->buyer_last_name),
             $product_title,
             $order->currency,
             number_format((float) $order->amount, 2),
@@ -107,12 +107,14 @@ class Product_Handel_Post_Payment {
             Product_Handel_Order_Manager::store_temp_password($order->id, $password);
         }
 
+        $full_name = trim($order->buyer_first_name . ' ' . $order->buyer_last_name);
         $user_id = wp_insert_user(array(
             'user_login'   => $username,
             'user_email'   => $order->buyer_email,
             'user_pass'    => $password,
-            'display_name' => $order->buyer_name,
-            'first_name'   => $order->buyer_name,
+            'display_name' => $full_name,
+            'first_name'   => $order->buyer_first_name,
+            'last_name'    => $order->buyer_last_name,
             'role'         => 'subscriber',
         ));
 
@@ -137,7 +139,7 @@ class Product_Handel_Post_Payment {
             "  Login URL: %s\n\n" .
             "We recommend changing your password after your first login.\n\n" .
             "— %s",
-            $order->buyer_name,
+            trim($order->buyer_first_name . ' ' . $order->buyer_last_name),
             $site_name,
             $username,
             $password,

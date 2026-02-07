@@ -2,6 +2,21 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.7.0] - 2026-02-07
+
+### Changed
+- **Split buyer name into first and last name** — Purchase form, database, admin orders page, invoice, and emails now use separate first name and last name fields
+- Database schema replaces `buyer_name` column with `buyer_first_name` and `buyer_last_name` columns
+- Admin orders table displays first name and last name in separate columns
+- Edit order modal now has separate first name and last name inputs
+- WordPress user accounts created on purchase now set `first_name` and `last_name` fields correctly
+
+### Added
+- **PayPal buyer override** — On successful payment, the buyer's first name, last name, and email are overridden with PayPal's verified payer data from the IPN response
+
+### Migration
+- Existing `buyer_name` values are automatically migrated to `buyer_first_name`; the old column is dropped
+
 ## [1.6.5] - 2026-02-07
 
 ### Added
@@ -49,7 +64,7 @@ All notable changes to ProductHandel will be documented in this file.
 ### Added
 - **Edit buyer information** - Admins can now edit buyer name and email address from the Product Orders screen
 - Modal popup for inline editing with AJAX save
-- `update_order()` method now supports `buyer_name` and `buyer_email` fields
+- `update_order()` method now supports buyer name and `buyer_email` fields
 
 ## [1.2.0] - 2026-02-03
 

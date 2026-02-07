@@ -148,7 +148,7 @@ class Product_Handel_Invoice_Page {
                 <table class="ph-invoice-table">
                     <tr>
                         <th>Name</th>
-                        <td><?php echo esc_html($order->buyer_name); ?></td>
+                        <td><?php echo esc_html(trim($order->buyer_first_name . ' ' . $order->buyer_last_name)); ?></td>
                     </tr>
                     <tr>
                         <th>Email</th>

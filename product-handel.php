@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ProductHandel
  * Description: Simple e-commerce plugin with PayPal Standard integration. No cart — buy directly.
- * Version: 1.6.5
+ * Version: 1.7.0
  * Author: Gavin Graham
  * License: GPL v2 or later
  * Text Domain: product-handel
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('PRODUCT_HANDEL_VERSION', '1.6.5');
+define('PRODUCT_HANDEL_VERSION', '1.7.0');
 define('PRODUCT_HANDEL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PRODUCT_HANDEL_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -89,6 +89,26 @@ class Product_Handel {
             // Upgrade to 1.4.0: add license_key column
             Product_Handel_Order_Manager::create_table();
             update_option('product_handel_db_version', '1.4.0');
+        }
+
+        if (version_compare($current_version, '1.7.0', '<')) {
+            // Upgrade to 1.7.0: split buyer_name into buyer_first_name + buyer_last_name
+            global $wpdb;
+            $table = $wpdb->prefix . 'product_handel_orders';
+
+            // Let dbDelta add the new columns
+            Product_Handel_Order_Manager::create_table();
+
+            // Migrate existing data: copy buyer_name into buyer_first_name
+            $col_exists = $wpdb->get_var(
+                "SHOW COLUMNS FROM $table LIKE 'buyer_name'"
+            );
+            if ($col_exists) {
+                $wpdb->query("UPDATE $table SET buyer_first_name = buyer_name WHERE buyer_first_name = '' AND buyer_name != ''");
+                $wpdb->query("ALTER TABLE $table DROP COLUMN buyer_name");
+            }
+
+            update_option('product_handel_db_version', '1.7.0');
         }
     }
 }

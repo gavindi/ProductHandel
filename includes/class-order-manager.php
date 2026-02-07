@@ -13,7 +13,8 @@ class Product_Handel_Order_Manager {
         $sql = "CREATE TABLE $table_name (
             id bigint(20) NOT NULL AUTO_INCREMENT,
             product_id bigint(20) NOT NULL,
-            buyer_name varchar(255) NOT NULL,
+            buyer_first_name varchar(255) NOT NULL DEFAULT '',
+            buyer_last_name varchar(255) NOT NULL DEFAULT '',
             buyer_email varchar(255) NOT NULL,
             amount decimal(10,2) NOT NULL,
             currency varchar(10) NOT NULL DEFAULT 'USD',
@@ -42,14 +43,15 @@ class Product_Handel_Order_Manager {
         $wpdb->insert(
             $wpdb->prefix . 'product_handel_orders',
             array(
-                'product_id'  => intval($data['product_id']),
-                'buyer_name'  => sanitize_text_field($data['buyer_name']),
-                'buyer_email' => sanitize_email($data['buyer_email']),
-                'amount'      => floatval($data['amount']),
-                'currency'    => sanitize_text_field($data['currency']),
-                'status'      => 'pending',
+                'product_id'      => intval($data['product_id']),
+                'buyer_first_name' => sanitize_text_field($data['buyer_first_name']),
+                'buyer_last_name'  => sanitize_text_field($data['buyer_last_name']),
+                'buyer_email'     => sanitize_email($data['buyer_email']),
+                'amount'          => floatval($data['amount']),
+                'currency'        => sanitize_text_field($data['currency']),
+                'status'          => 'pending',
             ),
-            array('%d', '%s', '%s', '%f', '%s', '%s')
+            array('%d', '%s', '%s', '%s', '%f', '%s', '%s')
         );
         return $wpdb->insert_id;
     }
@@ -59,7 +61,7 @@ class Product_Handel_Order_Manager {
         $update = array();
         $formats = array();
 
-        foreach (array('status', 'transaction_id', 'payment_data', 'buyer_name', 'buyer_email', 'license_key') as $field) {
+        foreach (array('status', 'transaction_id', 'payment_data', 'buyer_first_name', 'buyer_last_name', 'buyer_email', 'license_key') as $field) {
             if (isset($data[$field])) {
                 if ($field === 'buyer_email') {
                     $update[$field] = sanitize_email($data[$field]);

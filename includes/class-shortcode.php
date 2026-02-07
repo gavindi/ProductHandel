@@ -95,8 +95,12 @@ class Product_Handel_Shortcode {
                 <input type="hidden" name="ph_product_id" value="<?php echo esc_attr($product_id); ?>" />
                 <input type="hidden" name="_wpnonce" value="<?php echo esc_attr($nonce); ?>" />
                 <div class="ph-field">
-                    <label for="<?php echo $uid; ?>_name">Your Name <span class="ph-required">*</span></label>
-                    <input type="text" id="<?php echo $uid; ?>_name" name="ph_buyer_name" required class="ph-input" />
+                    <label for="<?php echo $uid; ?>_first_name">First Name <span class="ph-required">*</span></label>
+                    <input type="text" id="<?php echo $uid; ?>_first_name" name="ph_buyer_first_name" required class="ph-input" />
+                </div>
+                <div class="ph-field">
+                    <label for="<?php echo $uid; ?>_last_name">Last Name <span class="ph-required">*</span></label>
+                    <input type="text" id="<?php echo $uid; ?>_last_name" name="ph_buyer_last_name" required class="ph-input" />
                 </div>
                 <div class="ph-field">
                     <label for="<?php echo $uid; ?>_email">Your Email <span class="ph-required">*</span></label>
@@ -109,13 +113,15 @@ class Product_Handel_Shortcode {
         </div>
         <script>
         (function(){
-            var form = document.getElementById('<?php echo $uid; ?>_name').closest('form');
+            var form = document.getElementById('<?php echo $uid; ?>_first_name').closest('form');
             form.addEventListener('submit', function(e){
-                var name = document.getElementById('<?php echo $uid; ?>_name').value.trim();
+                var firstName = document.getElementById('<?php echo $uid; ?>_first_name').value.trim();
+                var lastName = document.getElementById('<?php echo $uid; ?>_last_name').value.trim();
                 var email = document.getElementById('<?php echo $uid; ?>_email').value.trim();
                 var err = document.getElementById('<?php echo $uid; ?>_error');
                 var msgs = [];
-                if (!name) msgs.push('Name is required.');
+                if (!firstName) msgs.push('First name is required.');
+                if (!lastName) msgs.push('Last name is required.');
                 if (!email) msgs.push('Email is required.');
                 else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) msgs.push('Please enter a valid email address.');
                 if (msgs.length) {

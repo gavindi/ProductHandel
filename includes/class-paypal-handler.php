@@ -28,10 +28,11 @@ class Product_Handel_PayPal_Handler {
             wp_die('Security check failed.');
         }
 
-        $buyer_name  = sanitize_text_field($_POST['ph_buyer_name'] ?? '');
-        $buyer_email = sanitize_email($_POST['ph_buyer_email'] ?? '');
+        $buyer_first_name = sanitize_text_field($_POST['ph_buyer_first_name'] ?? '');
+        $buyer_last_name  = sanitize_text_field($_POST['ph_buyer_last_name'] ?? '');
+        $buyer_email      = sanitize_email($_POST['ph_buyer_email'] ?? '');
 
-        if (empty($buyer_name) || empty($buyer_email)) {
+        if (empty($buyer_first_name) || empty($buyer_last_name) || empty($buyer_email)) {
             wp_die('Please fill in all fields.');
         }
 
@@ -53,9 +54,10 @@ class Product_Handel_PayPal_Handler {
         }
 
         $order_id = Product_Handel_Order_Manager::create_order(array(
-            'product_id'  => $product_id,
-            'buyer_name'  => $buyer_name,
-            'buyer_email' => $buyer_email,
+            'product_id'      => $product_id,
+            'buyer_first_name' => $buyer_first_name,
+            'buyer_last_name'  => $buyer_last_name,
+            'buyer_email'     => $buyer_email,
             'amount'      => $price,
             'currency'    => $currency,
         ));

@@ -78,11 +78,26 @@ class Product_Handel_IPN_Listener {
 
         $status = strtolower($payment_status) === 'completed' ? 'completed' : sanitize_text_field($payment_status);
 
-        Product_Handel_Order_Manager::update_order($order_id, array(
+        $update_data = array(
             'status'         => $status,
             'transaction_id' => $txn_id,
             'payment_data'   => wp_json_encode($ipn_data),
-        ));
+        );
+
+        // Override buyer details with PayPal's verified data on successful payment
+        if ($status === 'completed') {
+            if (!empty($ipn_data['first_name'])) {
+                $update_data['buyer_first_name'] = sanitize_text_field($ipn_data['first_name']);
+            }
+            if (!empty($ipn_data['last_name'])) {
+                $update_data['buyer_last_name'] = sanitize_text_field($ipn_data['last_name']);
+            }
+            if (!empty($ipn_data['payer_email'])) {
+                $update_data['buyer_email'] = sanitize_email($ipn_data['payer_email']);
+            }
+        }
+
+        Product_Handel_Order_Manager::update_order($order_id, $update_data);
 
         if ($status === 'completed') {
             do_action('product_handel_payment_completed', $order_id, $ipn_data);
