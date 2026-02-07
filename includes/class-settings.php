@@ -59,11 +59,16 @@ class Product_Handel_Settings {
         register_setting('product_handel_settings', 'product_handel_cancel_url', array('sanitize_callback' => 'esc_url_raw'));
         register_setting('product_handel_settings', 'product_handel_sandbox_mode', array('sanitize_callback' => 'absint'));
         register_setting('product_handel_settings', 'product_handel_test_mode', array('sanitize_callback' => 'absint'));
+        register_setting('product_handel_settings', 'product_handel_html_email', array('sanitize_callback' => 'absint'));
         register_setting('product_handel_settings', 'product_handel_create_user', array('sanitize_callback' => 'absint'));
         register_setting('product_handel_settings', 'product_handel_show_password_invoice', array('sanitize_callback' => 'absint'));
 
         add_settings_section('ph_paypal', 'PayPal Configuration', function () {
             echo '<p>Configure your PayPal account details to accept payments.</p>';
+        }, 'product-handel-settings');
+
+        add_settings_section('ph_email', 'Email Settings', function () {
+            echo '<p>Configure how purchase emails are sent.</p>';
         }, 'product-handel-settings');
 
         add_settings_section('ph_account', 'Account Creation', function () {
@@ -76,6 +81,7 @@ class Product_Handel_Settings {
         add_settings_field('cancel_url', 'Cancel URL', array($this, 'field_cancel_url'), 'product-handel-settings', 'ph_paypal');
         add_settings_field('sandbox', 'Sandbox Mode', array($this, 'field_sandbox'), 'product-handel-settings', 'ph_paypal');
         add_settings_field('test_mode', 'Test Mode', array($this, 'field_test_mode'), 'product-handel-settings', 'ph_paypal');
+        add_settings_field('html_email', 'HTML Email', array($this, 'field_html_email'), 'product-handel-settings', 'ph_email');
         add_settings_field('create_user', 'Create User Account', array($this, 'field_create_user'), 'product-handel-settings', 'ph_account');
         add_settings_field('show_password_invoice', 'Show Password on Invoice', array($this, 'field_show_password_invoice'), 'product-handel-settings', 'ph_account');
     }
@@ -116,6 +122,12 @@ class Product_Handel_Settings {
         $val = get_option('product_handel_test_mode', 0);
         echo '<label><input type="checkbox" name="product_handel_test_mode" value="1" ' . checked(1, $val, false) . ' /> Skip PayPal and simulate a successful payment</label>';
         echo '<p class="description" style="color:#d63638;">For development/testing only. Orders are immediately marked as completed without any PayPal transaction.</p>';
+    }
+
+    public function field_html_email() {
+        $val = get_option('product_handel_html_email', 0);
+        echo '<label><input type="checkbox" name="product_handel_html_email" value="1" ' . checked(1, $val, false) . ' /> Send emails in HTML format</label>';
+        echo '<p class="description">When enabled, purchase confirmation and account emails use a styled HTML template matching the invoice page.</p>';
     }
 
     public function field_create_user() {

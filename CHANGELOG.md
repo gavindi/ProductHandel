@@ -2,6 +2,13 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.8.0] - 2026-02-07
+
+### Added
+- **HTML email** — New "HTML Email" setting under Email Settings to send styled HTML emails matching the invoice page design
+- Purchase confirmation and account credentials emails both support HTML format
+- HTML emails use inline CSS with the same visual style as the invoice page (blue header, white card, styled tables)
+
 ## [1.7.1] - 2026-02-07
 
 ### Added
