@@ -35,6 +35,7 @@ class Product_Handel_Settings {
     private function __construct() {
         add_action('admin_menu', array($this, 'add_menus'));
         add_action('admin_init', array($this, 'register_settings'));
+        add_action('admin_init', array($this, 'handle_csv_export'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
         add_action('wp_ajax_ph_update_order', array($this, 'ajax_update_order'));
         add_action('wp_ajax_ph_resend_invoice', array($this, 'ajax_resend_invoice'));
@@ -158,12 +159,50 @@ class Product_Handel_Settings {
         <?php
     }
 
+    public function handle_csv_export() {
+        if (!isset($_GET['page']) || $_GET['page'] !== 'product-handel-orders') return;
+        if (!isset($_GET['export']) || $_GET['export'] !== 'csv') return;
+        if (!current_user_can('manage_options')) return;
+        if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'ph_export_csv')) return;
+
+        $orders = Product_Handel_Order_Manager::get_orders(array('limit' => 999999));
+
+        $filename = 'product-orders-' . gmdate('Y-m-d') . '.csv';
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $filename);
+
+        $output = fopen('php://output', 'w');
+        fputcsv($output, array('ID', 'Product', 'First Name', 'Last Name', 'Email', 'Amount', 'Currency', 'Status', 'Transaction ID', 'License Key', 'Date'));
+
+        foreach ($orders as $order) {
+            fputcsv($output, array(
+                $order->id,
+                get_the_title($order->product_id),
+                $order->buyer_first_name,
+                $order->buyer_last_name,
+                $order->buyer_email,
+                $order->amount,
+                $order->currency,
+                $order->status,
+                $order->transaction_id,
+                $order->license_key ?? '',
+                $order->created_at,
+            ));
+        }
+
+        fclose($output);
+        exit;
+    }
+
     public function render_orders_page() {
         if (!current_user_can('manage_options')) return;
         $orders = Product_Handel_Order_Manager::get_orders();
         ?>
         <div class="wrap">
             <h1>Product Orders</h1>
+            <p>
+                <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=product-handel-orders&export=csv'), 'ph_export_csv')); ?>" class="button button-secondary">Download CSV</a>
+            </p>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>

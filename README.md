@@ -13,7 +13,7 @@ A simple WordPress e-commerce plugin that lets you create and sell products with
 - Post-purchase invoice page with print-friendly styling
 - License key generation for products (SHA-256 based, displayed on invoice and in emails)
 - Product download links (displayed on invoice and in emails)
-- Order management in WordPress admin (edit buyer info, resend invoices, delete test orders)
+- Order management in WordPress admin (edit buyer info, resend invoices, delete test orders, CSV export)
 - Shortcode for embedding products on any page
 - Automatic database versioning and schema migration
 - Block theme compatible (Twenty Twenty-Three, Twenty Twenty-Four, etc.)
@@ -115,6 +115,7 @@ Admins can also:
 - **Edit** buyer first name, last name, and email via an inline modal
 - **Resend Invoice** email for completed orders
 - **Delete** orders when test mode is enabled
+- **Download CSV** to export all order data as a CSV file
 
 ## PayPal Setup
 

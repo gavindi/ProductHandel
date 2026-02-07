@@ -2,6 +2,11 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.8.1] - 2026-02-07
+
+### Added
+- **CSV export** — "Download CSV" button on the Product Orders admin page to export all order data as a CSV file
+
 ## [1.8.0] - 2026-02-07
 
 ### Added
