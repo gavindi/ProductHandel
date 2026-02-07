@@ -31,7 +31,7 @@ class Product_Handel_Post_Payment {
         if ($generate_key) {
             $salt = get_post_meta($order->product_id, '_ph_license_key_salt', true);
             if ($salt) {
-                $license_key = Product_Handel_Order_Manager::generate_license_key($order->buyer_email, $salt);
+                $license_key = Product_Handel_Order_Manager::generate_license_key($order->buyer_first_name, $order->buyer_last_name, $order->buyer_email, $salt);
                 Product_Handel_Order_Manager::update_order($order_id, array('license_key' => $license_key));
             }
         }

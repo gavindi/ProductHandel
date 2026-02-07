@@ -205,7 +205,7 @@ class Product_Handel_Post_Type {
         <p>
             <button type="button" class="button" onclick="document.getElementById('ph_license_key_salt').value = '<?php echo esc_js($random_salt); ?>';">Generate Salt</button>
         </p>
-        <p class="description">The license key is generated from buyer email + this salt. Keep the salt secret.</p>
+        <p class="description">The license key is generated from buyer name + email + this salt. Keep the salt secret.</p>
         <?php
     }
 

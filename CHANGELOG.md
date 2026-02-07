@@ -2,6 +2,11 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.8.2] - 2026-02-07
+
+### Changed
+- **License key algorithm** — Keys are now generated from buyer first name + last name + email + salt instead of email only
+
 ## [1.8.1] - 2026-02-07
 
 ### Added
