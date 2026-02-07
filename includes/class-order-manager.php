@@ -85,6 +85,15 @@ class Product_Handel_Order_Manager {
         }
     }
 
+    public static function delete_order($order_id) {
+        global $wpdb;
+        return $wpdb->delete(
+            $wpdb->prefix . 'product_handel_orders',
+            array('id' => intval($order_id)),
+            array('%d')
+        );
+    }
+
     public static function get_order($order_id) {
         global $wpdb;
         return $wpdb->get_row($wpdb->prepare(

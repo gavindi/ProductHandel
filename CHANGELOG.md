@@ -2,6 +2,13 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.7.1] - 2026-02-07
+
+### Added
+- **Delete order** — Admins can delete orders from the Product Orders screen when test mode is enabled
+- `delete_order()` method in Order Manager
+- Server-side guard prevents deletion when test mode is off
+
 ## [1.7.0] - 2026-02-07
 
 ### Changed

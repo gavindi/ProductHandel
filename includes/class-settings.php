@@ -38,6 +38,7 @@ class Product_Handel_Settings {
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
         add_action('wp_ajax_ph_update_order', array($this, 'ajax_update_order'));
         add_action('wp_ajax_ph_resend_invoice', array($this, 'ajax_resend_invoice'));
+        add_action('wp_ajax_ph_delete_order', array($this, 'ajax_delete_order'));
     }
 
     public function enqueue_admin_styles($hook) {
@@ -191,6 +192,12 @@ class Product_Handel_Settings {
                                                data-buyer-email="<?php echo esc_attr($order->buyer_email); ?>">Resend Invoice</a>
                                         </span>
                                         <?php endif; ?>
+                                        <?php if (get_option('product_handel_test_mode', 0)): ?>
+                                        | <span class="delete">
+                                            <a href="#" class="ph-delete-order"
+                                               data-order-id="<?php echo esc_attr($order->id); ?>">Delete</a>
+                                        </span>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                                 <td><?php echo esc_html($order->buyer_last_name); ?></td>
@@ -258,6 +265,30 @@ class Product_Handel_Settings {
 
             $('.ph-modal').on('click', function(e) {
                 if (e.target === this) $(this).hide();
+            });
+
+            $('.ph-delete-order').on('click', function(e) {
+                e.preventDefault();
+                if (!confirm('Delete this order permanently?')) {
+                    return;
+                }
+                var $link = $(this);
+                $link.css('pointer-events', 'none').text('Deleting...');
+                $.post(ajaxurl, {
+                    action: 'ph_delete_order',
+                    order_id: $link.data('order-id'),
+                    _wpnonce: $('#ph_edit_nonce').val()
+                }, function(response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert(response.data || 'Error deleting order');
+                        $link.css('pointer-events', '').text('Delete');
+                    }
+                }).fail(function() {
+                    alert('Request failed. Please try again.');
+                    $link.css('pointer-events', '').text('Delete');
+                });
             });
 
             $('.ph-resend-invoice').on('click', function(e) {
@@ -373,6 +404,29 @@ class Product_Handel_Settings {
 
         $product_title = get_the_title($order->product_id);
         Product_Handel_Post_Payment::get_instance()->send_purchase_email($order, $product_title, $order->license_key);
+
+        wp_send_json_success();
+    }
+
+    public function ajax_delete_order() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Permission denied');
+        }
+
+        if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'ph_edit_order')) {
+            wp_send_json_error('Invalid security token');
+        }
+
+        if (!get_option('product_handel_test_mode', 0)) {
+            wp_send_json_error('Delete is only available in test mode');
+        }
+
+        $order_id = intval($_POST['order_id'] ?? 0);
+        if (!$order_id) {
+            wp_send_json_error('Invalid order ID');
+        }
+
+        Product_Handel_Order_Manager::delete_order($order_id);
 
         wp_send_json_success();
     }
