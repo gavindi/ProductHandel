@@ -44,7 +44,7 @@ class Product_Handel_Shortcode {
         }
 
         $price = get_post_meta($product_id, '_ph_product_price', true);
-        if (empty($price)) {
+        if ($price === '' || $price === false || $price === null) {
             return '<p class="ph-error">Product price not set.</p>';
         }
 
@@ -78,7 +78,7 @@ class Product_Handel_Shortcode {
         }
 
         $price = get_post_meta($product_id, '_ph_product_price', true);
-        if (empty($price)) {
+        if ($price === '' || $price === false || $price === null) {
             return '';
         }
 

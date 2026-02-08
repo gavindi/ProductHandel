@@ -5,6 +5,7 @@ A simple WordPress e-commerce plugin that lets you create and sell products with
 ## Features
 
 - Custom "Products" post type with price management
+- Free products (price of 0) skip PayPal and complete instantly
 - PayPal Standard integration (no API keys needed, just your PayPal email)
 - Sandbox mode for testing with PayPal sandbox accounts
 - Test mode for development without PayPal
@@ -91,8 +92,7 @@ On the product page itself, customers see a purchase form with first name, last 
 ### Invoice Page
 
 After a successful payment, buyers are redirected to a secure invoice page (`/invoice/{token}`) that displays:
-- Order details (product name, amount, transaction ID, purchase date)
-- Buyer information
+- Order details (buyer name, product name, amount, transaction ID, purchase date)
 - License key (if enabled for the product)
 - Download link (if configured for the product)
 - Generated password (if user account creation and "Show Password on Invoice" are enabled)

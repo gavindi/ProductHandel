@@ -125,6 +125,10 @@ class Product_Handel_Invoice_Page {
                 <h2>Order Details</h2>
                 <table class="ph-invoice-table">
                     <tr>
+                        <th>Buyer</th>
+                        <td><?php echo esc_html(trim($order->buyer_first_name . ' ' . $order->buyer_last_name)); ?></td>
+                    </tr>
+                    <tr>
                         <th>Product</th>
                         <td><?php echo esc_html($product_title); ?></td>
                     </tr>
@@ -139,20 +143,6 @@ class Product_Handel_Invoice_Page {
                     <tr>
                         <th>Purchase Date</th>
                         <td><?php echo esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($order->created_at))); ?></td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="ph-invoice-section">
-                <h2>Buyer Information</h2>
-                <table class="ph-invoice-table">
-                    <tr>
-                        <th>Name</th>
-                        <td><?php echo esc_html(trim($order->buyer_first_name . ' ' . $order->buyer_last_name)); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Email</th>
-                        <td><?php echo esc_html($order->buyer_email); ?></td>
                     </tr>
                 </table>
             </div>

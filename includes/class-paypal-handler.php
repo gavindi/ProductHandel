@@ -39,7 +39,7 @@ class Product_Handel_PayPal_Handler {
         $product = get_post($product_id);
         $price   = get_post_meta($product_id, '_ph_product_price', true);
 
-        if (!$product || get_post_type($product_id) !== 'ph_product' || empty($price)) {
+        if (!$product || get_post_type($product_id) !== 'ph_product' || ($price === '' || $price === false || $price === null)) {
             wp_die('Invalid product.');
         }
 
@@ -65,6 +65,17 @@ class Product_Handel_PayPal_Handler {
         // Generate access token for invoice page
         $access_token = Product_Handel_Order_Manager::generate_access_token($order_id);
         $invoice_url = home_url('/invoice/' . $access_token);
+
+        // Free product: skip PayPal, mark order completed immediately
+        if (floatval($price) == 0) {
+            Product_Handel_Order_Manager::update_order($order_id, array(
+                'status'         => 'completed',
+                'transaction_id' => 'FREE-' . $order_id . '-' . time(),
+            ));
+            do_action('product_handel_payment_completed', $order_id, array());
+            wp_redirect($invoice_url);
+            exit;
+        }
 
         // Test mode: skip PayPal, mark order completed immediately
         if (get_option('product_handel_test_mode', 0)) {

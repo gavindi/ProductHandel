@@ -2,6 +2,12 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.8.5] - 2026-02-08
+
+### Added
+- **Free product support** — Products with a price of 0 now skip the PayPal transaction and go directly to post-payment actions (license key, email, user creation) with an auto-generated `FREE-` transaction ID
+- **Buyer name in order details** — The buyer's full name is now shown as the first line in the Order Details section on the invoice page and in purchase confirmation emails (both HTML and plain text)
+
 ## [1.8.4] - 2026-02-08
 
 ### Fixed
