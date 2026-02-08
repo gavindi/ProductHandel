@@ -14,7 +14,7 @@ class Product_Handel_IPN_Listener {
     }
 
     private function __construct() {
-        add_action('init', array($this, 'listen'));
+        $this->listen();
     }
 
     public function listen() {
@@ -30,7 +30,7 @@ class Product_Handel_IPN_Listener {
 
         parse_str($raw, $ipn_data);
 
-        if (!$this->verify($ipn_data)) {
+        if (!$this->verify($raw)) {
             status_header(400);
             exit;
         }
@@ -40,29 +40,26 @@ class Product_Handel_IPN_Listener {
         exit;
     }
 
-    private function verify($ipn_data) {
+    private function verify($raw_post) {
         $sandbox = get_option('product_handel_sandbox_mode', 1);
         $url = $sandbox
-            ? 'https://www.sandbox.paypal.com/cgi-bin/webscr'
-            : 'https://www.paypal.com/cgi-bin/webscr';
+            ? 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr'
+            : 'https://ipnpb.paypal.com/cgi-bin/webscr';
 
-        $body = 'cmd=_notify-validate';
-        foreach ($ipn_data as $key => $value) {
-            $body .= '&' . urlencode($key) . '=' . urlencode($value);
-        }
+        $body = 'cmd=_notify-validate&' . $raw_post;
 
-        $response = wp_safe_remote_post($url, array(
+        $response = wp_remote_post($url, array(
             'body'      => $body,
             'timeout'   => 60,
             'sslverify' => true,
         ));
 
         if (is_wp_error($response)) {
-            $this->log('IPN verification failed: ' . $response->get_error_message());
             return false;
         }
 
-        return trim(wp_remote_retrieve_body($response)) === 'VERIFIED';
+        $result = trim(wp_remote_retrieve_body($response));
+        return $result === 'VERIFIED';
     }
 
     private function process($ipn_data) {
@@ -72,7 +69,6 @@ class Product_Handel_IPN_Listener {
         $receiver_email = $ipn_data['receiver_email'] ?? '';
 
         if (strcasecmp($receiver_email, get_option('product_handel_paypal_email')) !== 0) {
-            $this->log('Receiver email mismatch: ' . $receiver_email);
             return;
         }
 
@@ -104,9 +100,4 @@ class Product_Handel_IPN_Listener {
         }
     }
 
-    private function log($msg) {
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('ProductHandel: ' . $msg);
-        }
-    }
 }

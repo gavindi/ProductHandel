@@ -2,6 +2,15 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.8.4] - 2026-02-08
+
+### Fixed
+- **PayPal IPN not working** — IPN listener was never triggered due to a timing issue where it registered on the `init` hook after it had already fired
+- **IPN verification URL** — Changed to PayPal's dedicated IPN verification endpoints (`ipnpb.sandbox.paypal.com` / `ipnpb.paypal.com`)
+- **IPN verification blocked** — Replaced `wp_safe_remote_post` with `wp_remote_post` to prevent PayPal's domain from being blocked
+- **IPN verification data** — Send raw POST data to PayPal for verification instead of re-encoding, which could mangle special characters
+- **Post-payment actions not running** — License key generation and confirmation emails were skipped because their handlers were registered after the IPN listener processed the payment; reordered initialization so all handlers are registered before the IPN listener runs
+
 ## [1.8.2] - 2026-02-07
 
 ### Changed

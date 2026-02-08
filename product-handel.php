@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ProductHandel
  * Description: Simple e-commerce plugin with PayPal Standard integration. No cart — buy directly.
- * Version: 1.8.2
+ * Version: 1.8.4
  * Author: Gavin Graham
  * License: GPL v2 or later
  * Text Domain: product-handel
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('PRODUCT_HANDEL_VERSION', '1.8.2');
+define('PRODUCT_HANDEL_VERSION', '1.8.4');
 define('PRODUCT_HANDEL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PRODUCT_HANDEL_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -50,9 +50,9 @@ class Product_Handel {
         Product_Handel_Settings::get_instance();
         Product_Handel_Shortcode::get_instance();
         Product_Handel_PayPal_Handler::get_instance();
-        Product_Handel_IPN_Listener::get_instance();
         Product_Handel_Post_Payment::get_instance();
         Product_Handel_Invoice_Page::get_instance();
+        Product_Handel_IPN_Listener::get_instance();
     }
 
     public function activate() {
