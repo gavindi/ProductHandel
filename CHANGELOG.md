@@ -2,10 +2,15 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.8.7] - 2026-02-10
+
+### Changed
+- **Buyer details on invoice** — The Order Details section on the invoice page and in purchase confirmation emails now shows three separate fields (First Name, Last Name, Email) instead of a single combined Buyer field
+
 ## [1.8.6] - 2026-02-10
 
 ### Added
-- **Buyer email on invoice** — The buyer's email address is now displayed below the buyer's name in the Order Details section on the invoice page and in purchase confirmation emails (both HTML and plain text)
+- **Buyer email on invoice** — The buyer's email address is now displayed in the Order Details section on the invoice page and in purchase confirmation emails (both HTML and plain text)
 
 ## [1.8.5] - 2026-02-08
 

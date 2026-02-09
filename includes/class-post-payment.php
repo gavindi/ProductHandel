@@ -54,12 +54,15 @@ class Product_Handel_Post_Payment {
 
         if (get_option('product_handel_html_email', 0)) {
             $rows = sprintf(
-                '<tr><th style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;width:40%%;font-weight:500;color:#666;">Buyer</th><td style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;">%s<br>%s</td></tr>' .
+                '<tr><th style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;width:40%%;font-weight:500;color:#666;">First Name</th><td style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;">%s</td></tr>' .
+                '<tr><th style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;width:40%%;font-weight:500;color:#666;">Last Name</th><td style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;">%s</td></tr>' .
+                '<tr><th style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;width:40%%;font-weight:500;color:#666;">Email</th><td style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;">%s</td></tr>' .
                 '<tr><th style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;width:40%%;font-weight:500;color:#666;">Product</th><td style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;">%s</td></tr>' .
                 '<tr><th style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;width:40%%;font-weight:500;color:#666;">Amount Paid</th><td style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;">%s %s</td></tr>' .
                 '<tr><th style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;width:40%%;font-weight:500;color:#666;">Transaction ID</th><td style="padding:10px 0;text-align:left;border-bottom:1px solid #f0f0f0;">%s</td></tr>' .
                 '<tr><th style="padding:10px 0;text-align:left;width:40%%;font-weight:500;color:#666;">Date</th><td style="padding:10px 0;text-align:left;">%s</td></tr>',
-                esc_html($full_name),
+                esc_html($order->buyer_first_name),
+                esc_html($order->buyer_last_name),
                 esc_html($order->buyer_email),
                 esc_html($product_title),
                 esc_html($order->currency),
@@ -103,13 +106,16 @@ class Product_Handel_Post_Payment {
                 "Hi %s,\n\n" .
                 "Thank you for your purchase!\n\n" .
                 "Order Details:\n" .
-                "  Buyer: %s (%s)\n" .
+                "  First Name: %s\n" .
+                "  Last Name: %s\n" .
+                "  Email: %s\n" .
                 "  Product: %s\n" .
                 "  Amount: %s %s\n" .
                 "  Transaction ID: %s\n" .
                 "  Date: %s\n",
                 $full_name,
-                $full_name,
+                $order->buyer_first_name,
+                $order->buyer_last_name,
                 $order->buyer_email,
                 $product_title,
                 $order->currency,
