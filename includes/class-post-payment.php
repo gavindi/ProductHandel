@@ -72,15 +72,19 @@ class Product_Handel_Post_Payment {
             );
 
             $extra = '';
+            $registration_note = get_post_meta($order->product_id, '_ph_registration_note', true);
             if ($license_key) {
-                $extra .= sprintf(
-                    '<div style="padding:25px 30px;border-bottom:1px solid #eee;background:#e8f4f8;">' .
+                $license_html = sprintf(
                     '<h2 style="font-size:16px;color:#0073aa;margin:0 0 15px;text-transform:uppercase;letter-spacing:0.5px;">Your License Key</h2>' .
                     '<div style="text-align:center;padding:15px;background:#fff;border:2px dashed #0073aa;border-radius:4px;">' .
                     '<code style="font-size:18px;font-weight:bold;letter-spacing:2px;color:#0073aa;">%s</code>' .
-                    '</div></div>',
+                    '</div>',
                     esc_html($license_key)
                 );
+                if (!empty($registration_note)) {
+                    $license_html .= sprintf('<p style="margin:15px 0 0;color:#555;">%s</p>', nl2br(esc_html($registration_note)));
+                }
+                $extra .= '<div style="padding:25px 30px;border-bottom:1px solid #eee;background:#e8f4f8;">' . $license_html . '</div>';
             }
             if ($download_url && $show_download) {
                 $extra .= sprintf(
@@ -124,8 +128,12 @@ class Product_Handel_Post_Payment {
                 $order->created_at
             );
 
+            $registration_note = get_post_meta($order->product_id, '_ph_registration_note', true);
             if ($license_key) {
                 $message .= sprintf("\nYour License Key: %s\n", $license_key);
+                if (!empty($registration_note)) {
+                    $message .= $registration_note . "\n";
+                }
             }
             if ($download_url && $show_download) {
                 $message .= sprintf("\nDownload Your Product: %s\n", $download_url);

@@ -198,6 +198,12 @@ class Product_Handel_Invoice_Page {
                     <code><?php echo esc_html($order->license_key); ?></code>
                 </div>
                 <p class="ph-invoice-note">Save this license key for your records.</p>
+                <?php
+                $registration_note = get_post_meta($order->product_id, '_ph_registration_note', true);
+                if (!empty($registration_note)):
+                ?>
+                <p class="ph-invoice-note"><?php echo nl2br(esc_html($registration_note)); ?></p>
+                <?php endif; ?>
             </div>
             <?php endif; ?>
 

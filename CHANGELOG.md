@@ -2,6 +2,11 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.8.8] - 2026-02-10
+
+### Added
+- **Product registration note** — New "Registration Note" textarea in the License Key Settings meta box on the product edit page. The note appears on the invoice and in purchase confirmation emails below the license key.
+
 ## [1.8.7] - 2026-02-10
 
 ### Changed

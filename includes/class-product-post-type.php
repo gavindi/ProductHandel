@@ -206,6 +206,12 @@ class Product_Handel_Post_Type {
             <button type="button" class="button" onclick="document.getElementById('ph_license_key_salt').value = '<?php echo esc_js($random_salt); ?>';">Generate Salt</button>
         </p>
         <p class="description">The license key is generated from buyer name + email + this salt. Keep the salt secret.</p>
+        <hr />
+        <p>
+            <label for="ph_registration_note">Registration Note:</label>
+            <textarea name="ph_registration_note" id="ph_registration_note" style="width: 100%;" rows="3"><?php echo esc_textarea(get_post_meta($post->ID, '_ph_registration_note', true)); ?></textarea>
+        </p>
+        <p class="description">This note will appear on the invoice and email below the license key.</p>
         <?php
     }
 
@@ -248,6 +254,11 @@ class Product_Handel_Post_Type {
 
         if (isset($_POST['ph_license_key_salt'])) {
             update_post_meta($post_id, '_ph_license_key_salt', sanitize_text_field($_POST['ph_license_key_salt']));
+        }
+
+        // Save registration note
+        if (isset($_POST['ph_registration_note'])) {
+            update_post_meta($post_id, '_ph_registration_note', sanitize_textarea_field($_POST['ph_registration_note']));
         }
 
         // Save download settings
