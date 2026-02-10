@@ -2,6 +2,14 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.8.9] - 2026-02-10
+
+### Added
+- **Custom thank you message** — New "Thank You Message" setting under Email Settings to customise the message shown in purchase confirmation emails. Defaults to "Thank you for your purchase."
+
+### Changed
+- **Email greeting** — Purchase confirmation emails now greet with "Hi [First Name]," instead of "Hi [First Name Last Name],"
+
 ## [1.8.8] - 2026-02-10
 
 ### Added

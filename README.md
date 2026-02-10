@@ -10,9 +10,10 @@ A simple WordPress e-commerce plugin that lets you create and sell products with
 - Sandbox mode for testing with PayPal sandbox accounts
 - Test mode for development without PayPal
 - Automatic WordPress user account creation for buyers (optional)
-- Purchase confirmation emails with optional HTML formatting
+- Purchase confirmation emails with optional HTML formatting and customisable thank you message
 - Post-purchase invoice page with print-friendly styling
 - License key generation for products (SHA-256 based, displayed on invoice and in emails)
+- Per-product registration note displayed below the license key on invoices and emails
 - Product download links (displayed on invoice and in emails)
 - Order management in WordPress admin (edit buyer info, resend invoices, delete test orders, CSV export)
 - Shortcode for embedding products on any page
@@ -59,6 +60,7 @@ Navigate to **Settings > ProductHandel** to configure:
 - **Create User Account**: Automatically create a WordPress subscriber account for new buyers
 - **Show Password on Invoice**: Display the generated password on the invoice page when user account creation is enabled
 - **HTML Email**: Send styled HTML emails matching the invoice page design instead of plain text
+- **Thank You Message**: Customise the message shown in purchase confirmation emails (defaults to "Thank you for your purchase.")
 
 The settings page also displays your **IPN Listener URL** — configure this in your PayPal account under IPN notification settings.
 
@@ -69,7 +71,8 @@ The settings page also displays your **IPN Listener URL** — configure this in 
 3. Set a featured image (optional, displayed in shortcode)
 4. Enter the price in the **Product Price** meta box on the sidebar
 5. Optionally enable **License Key Generation** and provide a salt in the License Key Settings meta box
-6. Optionally add a **Download Link** URL in the Download Settings meta box
+6. Optionally add a **Registration Note** in the License Key Settings meta box (displayed on invoices and emails below the license key)
+7. Optionally add a **Download Link** URL in the Download Settings meta box
 7. Publish the product
 
 ### Shortcode
@@ -92,8 +95,9 @@ On the product page itself, customers see a purchase form with first name, last 
 ### Invoice Page
 
 After a successful payment, buyers are redirected to a secure invoice page (`/invoice/{token}`) that displays:
-- Order details (buyer name, product name, amount, transaction ID, purchase date)
+- Order details (buyer first name, last name, email, product name, amount, transaction ID, purchase date)
 - License key (if enabled for the product)
+- Registration note (if configured for the product, displayed below the license key)
 - Download link (if configured for the product)
 - Generated password (if user account creation and "Show Password on Invoice" are enabled)
 

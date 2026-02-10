@@ -61,6 +61,7 @@ class Product_Handel_Settings {
         register_setting('product_handel_settings', 'product_handel_sandbox_mode', array('sanitize_callback' => 'absint'));
         register_setting('product_handel_settings', 'product_handel_test_mode', array('sanitize_callback' => 'absint'));
         register_setting('product_handel_settings', 'product_handel_html_email', array('sanitize_callback' => 'absint'));
+        register_setting('product_handel_settings', 'product_handel_thank_you_message', array('sanitize_callback' => 'sanitize_text_field'));
         register_setting('product_handel_settings', 'product_handel_create_user', array('sanitize_callback' => 'absint'));
         register_setting('product_handel_settings', 'product_handel_show_password_invoice', array('sanitize_callback' => 'absint'));
 
@@ -83,6 +84,7 @@ class Product_Handel_Settings {
         add_settings_field('sandbox', 'Sandbox Mode', array($this, 'field_sandbox'), 'product-handel-settings', 'ph_paypal');
         add_settings_field('test_mode', 'Test Mode', array($this, 'field_test_mode'), 'product-handel-settings', 'ph_paypal');
         add_settings_field('html_email', 'HTML Email', array($this, 'field_html_email'), 'product-handel-settings', 'ph_email');
+        add_settings_field('thank_you_message', 'Thank You Message', array($this, 'field_thank_you_message'), 'product-handel-settings', 'ph_email');
         add_settings_field('create_user', 'Create User Account', array($this, 'field_create_user'), 'product-handel-settings', 'ph_account');
         add_settings_field('show_password_invoice', 'Show Password on Invoice', array($this, 'field_show_password_invoice'), 'product-handel-settings', 'ph_account');
     }
@@ -129,6 +131,12 @@ class Product_Handel_Settings {
         $val = get_option('product_handel_html_email', 0);
         echo '<label><input type="checkbox" name="product_handel_html_email" value="1" ' . checked(1, $val, false) . ' /> Send emails in HTML format</label>';
         echo '<p class="description">When enabled, purchase confirmation and account emails use a styled HTML template matching the invoice page.</p>';
+    }
+
+    public function field_thank_you_message() {
+        $val = get_option('product_handel_thank_you_message', 'Thank you for your purchase.');
+        echo '<input type="text" name="product_handel_thank_you_message" value="' . esc_attr($val) . '" class="regular-text" />';
+        echo '<p class="description">Custom message shown in purchase confirmation emails.</p>';
     }
 
     public function field_create_user() {

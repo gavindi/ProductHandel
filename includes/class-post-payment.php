@@ -51,6 +51,7 @@ class Product_Handel_Post_Payment {
         $full_name = trim($order->buyer_first_name . ' ' . $order->buyer_last_name);
         $download_url = get_post_meta($order->product_id, '_ph_download_url', true);
         $show_download = get_post_meta($order->product_id, '_ph_show_download_link', true);
+        $thank_you_message = get_option('product_handel_thank_you_message', 'Thank you for your purchase.');
 
         if (get_option('product_handel_html_email', 0)) {
             $rows = sprintf(
@@ -99,7 +100,7 @@ class Product_Handel_Post_Payment {
 
             $message = $this->build_html_email(
                 'Purchase Receipt',
-                sprintf('<p style="margin:0 0 20px;">Hi %s,</p><p style="margin:0 0 20px;">Thank you for your purchase!</p>', esc_html($full_name)) .
+                sprintf('<p style="margin:0 0 20px;">Hi %s,</p><p style="margin:0 0 20px;">%s</p>', esc_html($order->buyer_first_name), esc_html($thank_you_message)) .
                 '<h2 style="font-size:16px;color:#0073aa;margin:0 0 15px;text-transform:uppercase;letter-spacing:0.5px;">Order Details</h2>' .
                 '<table style="width:100%;border-collapse:collapse;">' . $rows . '</table>',
                 $extra
@@ -108,7 +109,7 @@ class Product_Handel_Post_Payment {
         } else {
             $message = sprintf(
                 "Hi %s,\n\n" .
-                "Thank you for your purchase!\n\n" .
+                "%s\n\n" .
                 "Order Details:\n" .
                 "  First Name: %s\n" .
                 "  Last Name: %s\n" .
@@ -117,7 +118,8 @@ class Product_Handel_Post_Payment {
                 "  Amount: %s %s\n" .
                 "  Transaction ID: %s\n" .
                 "  Date: %s\n",
-                $full_name,
+                $order->buyer_first_name,
+                $thank_you_message,
                 $order->buyer_first_name,
                 $order->buyer_last_name,
                 $order->buyer_email,
