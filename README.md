@@ -90,7 +90,7 @@ Replace `123` with your product's ID. The shortcode displays:
 - Price
 - "Buy Now" button linking to the product page
 
-On the product page itself, customers see a purchase form with first name, last name, and email fields, followed by a "Complete Purchase" button that initiates the PayPal payment flow.
+On the product page itself, customers see a purchase form with first name, last name, and email fields, followed by a "Pay via Paypal" button that initiates the PayPal payment flow.
 
 ### Invoice Page
 

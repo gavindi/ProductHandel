@@ -2,6 +2,11 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.8.10] - 2026-02-11
+
+### Changed
+- **Purchase button label** — "Complete Purchase" button on the product page renamed to "Pay via Paypal"
+
 ## [1.8.9] - 2026-02-10
 
 ### Added

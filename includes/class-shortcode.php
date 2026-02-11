@@ -108,7 +108,7 @@ class Product_Handel_Shortcode {
                     <p class="ph-field-note">Your email address will be used to create your account so you can later retrieve your purchase details.</p>
                 </div>
                 <div class="ph-form-error" id="<?php echo $uid; ?>_error" style="display:none;"></div>
-                <button type="submit" class="ph-buy-button">Complete Purchase</button>
+                <button type="submit" class="ph-buy-button">Pay via Paypal</button>
             </form>
         </div>
         <script>
