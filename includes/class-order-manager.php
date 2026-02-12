@@ -223,7 +223,7 @@ class Product_Handel_Order_Manager {
     }
 
     public static function generate_license_key($first_name, $last_name, $email, $salt, $transaction_id) {
-        $hash = hash('sha256', strtolower(trim($first_name)) . strtolower(trim($last_name)) . strtolower(trim($email)) . $salt . $transaction_id);
+        $hash = hash('sha256', strtolower(trim($first_name)) . strtolower(trim($last_name)) . strtolower(trim($email)) . strtolower(trim($transaction_id)) . $salt);
         // Format as XXXX-XXXX-XXXX-XXXX (first 16 chars, uppercased)
         $key = strtoupper(substr($hash, 0, 16));
         return substr($key, 0, 4) . '-' . substr($key, 4, 4) . '-' . substr($key, 8, 4) . '-' . substr($key, 12, 4);

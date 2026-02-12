@@ -2,6 +2,12 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.9.3] - 2026-02-12
+
+### Changed
+- **License key algorithm** — Transaction ID is now lowercased before hashing for consistent key generation regardless of case
+- **License key algorithm** — Hash input reordered to first name, last name, email, transaction ID, salt
+
 ## [1.9.2] - 2026-02-12
 
 ### Changed
