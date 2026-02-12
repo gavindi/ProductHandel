@@ -2,6 +2,12 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.9.4] - 2026-02-12
+
+### Added
+- **reCAPTCHA v3** — Optional Google reCAPTCHA v3 integration on the purchase form with admin settings for enable/disable checkbox, site key, and secret key
+- **Honeypot field** — Hidden "Zip/Post Code" field on the purchase form to catch bot submissions; triggers a silent redirect to the homepage
+
 ## [1.9.3] - 2026-02-12
 
 ### Changed

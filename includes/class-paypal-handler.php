@@ -28,6 +28,36 @@ class Product_Handel_PayPal_Handler {
             wp_die('Security check failed.');
         }
 
+        // Honeypot check
+        if (!empty($_POST['ph_buyer_zip'])) {
+            wp_redirect(home_url());
+            exit;
+        }
+
+        // reCAPTCHA v3 verification
+        $recaptcha_enabled = get_option('product_handel_recaptcha_enabled', 0);
+        $recaptcha_secret  = get_option('product_handel_recaptcha_secret_key', '');
+        if ($recaptcha_enabled && !empty($recaptcha_secret)) {
+            $recaptcha_token = sanitize_text_field($_POST['ph_recaptcha_token'] ?? '');
+            if (empty($recaptcha_token)) {
+                wp_die('reCAPTCHA verification failed. Please try again.');
+            }
+            $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', array(
+                'body' => array(
+                    'secret'   => $recaptcha_secret,
+                    'response' => $recaptcha_token,
+                    'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+                ),
+            ));
+            if (is_wp_error($response)) {
+                wp_die('reCAPTCHA verification failed. Please try again.');
+            }
+            $result = json_decode(wp_remote_retrieve_body($response), true);
+            if (empty($result['success']) || (isset($result['score']) && $result['score'] < 0.5)) {
+                wp_die('reCAPTCHA verification failed. Please try again.');
+            }
+        }
+
         $buyer_first_name = sanitize_text_field($_POST['ph_buyer_first_name'] ?? '');
         $buyer_last_name  = sanitize_text_field($_POST['ph_buyer_last_name'] ?? '');
         $buyer_email      = sanitize_email($_POST['ph_buyer_email'] ?? '');

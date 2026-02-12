@@ -86,6 +86,14 @@ class Product_Handel_Shortcode {
         $nonce = wp_create_nonce('ph_buy_' . $product_id);
         $uid = 'ph_' . $product_id;
 
+        $recaptcha_enabled = get_option('product_handel_recaptcha_enabled', 0);
+        $recaptcha_site_key = get_option('product_handel_recaptcha_site_key', '');
+        $use_recaptcha = $recaptcha_enabled && !empty($recaptcha_site_key);
+
+        if ($use_recaptcha) {
+            wp_enqueue_script('google-recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . urlencode($recaptcha_site_key), array(), null, true);
+        }
+
         ob_start();
         ?>
         <div class="ph-buy-form">
@@ -107,6 +115,13 @@ class Product_Handel_Shortcode {
                     <input type="email" id="<?php echo esc_attr($uid); ?>_email" name="ph_buyer_email" required class="ph-input" />
                     <p class="ph-field-note">Your email address will be used to create your account so you can later retrieve your purchase details.</p>
                 </div>
+                <div class="ph-field ph-field-zip">
+                    <label for="<?php echo esc_attr($uid); ?>_zip">Zip/Post Code</label>
+                    <input type="text" id="<?php echo esc_attr($uid); ?>_zip" name="ph_buyer_zip" class="ph-input" autocomplete="off" tabindex="-1" />
+                </div>
+                <?php if ($use_recaptcha): ?>
+                <input type="hidden" name="ph_recaptcha_token" id="<?php echo esc_attr($uid); ?>_recaptcha" value="" />
+                <?php endif; ?>
                 <div class="ph-form-error" id="<?php echo esc_attr($uid); ?>_error" style="display:none;"></div>
                 <button type="submit" class="ph-buy-button">Pay via Paypal</button>
             </form>
@@ -114,6 +129,7 @@ class Product_Handel_Shortcode {
         <script>
         (function(){
             var form = document.getElementById(<?php echo wp_json_encode($uid . '_first_name'); ?>).closest('form');
+            var submitting = false;
             form.addEventListener('submit', function(e){
                 var firstName = document.getElementById(<?php echo wp_json_encode($uid . '_first_name'); ?>).value.trim();
                 var lastName = document.getElementById(<?php echo wp_json_encode($uid . '_last_name'); ?>).value.trim();
@@ -128,9 +144,29 @@ class Product_Handel_Shortcode {
                     e.preventDefault();
                     err.innerHTML = msgs.join('<br>');
                     err.style.display = 'block';
-                } else {
-                    err.style.display = 'none';
+                    return;
                 }
+                err.style.display = 'none';
+                <?php if ($use_recaptcha): ?>
+                if (!submitting) {
+                    e.preventDefault();
+                    var btn = form.querySelector('.ph-buy-button');
+                    btn.disabled = true;
+                    btn.textContent = 'Please wait...';
+                    grecaptcha.ready(function(){
+                        grecaptcha.execute(<?php echo wp_json_encode($recaptcha_site_key); ?>, {action: 'purchase'}).then(function(token){
+                            document.getElementById(<?php echo wp_json_encode($uid . '_recaptcha'); ?>).value = token;
+                            submitting = true;
+                            form.submit();
+                        }).catch(function(){
+                            btn.disabled = false;
+                            btn.textContent = 'Pay via Paypal';
+                            err.innerHTML = 'reCAPTCHA verification failed. Please try again.';
+                            err.style.display = 'block';
+                        });
+                    });
+                }
+                <?php endif; ?>
             });
         })();
         </script>

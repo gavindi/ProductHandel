@@ -89,6 +89,17 @@
     border-radius: 4px;
 }
 
+.ph-field-zip {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    opacity: 0;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
 /* Single product page featured image */
 img.attachment-post-thumbnail.size-post-thumbnail.wp-post-image {
     max-width: 256px !important;

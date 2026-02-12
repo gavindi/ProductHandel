@@ -64,6 +64,9 @@ class Product_Handel_Settings {
         register_setting('product_handel_settings', 'product_handel_thank_you_message', array('sanitize_callback' => 'sanitize_text_field'));
         register_setting('product_handel_settings', 'product_handel_create_user', array('sanitize_callback' => 'absint'));
         register_setting('product_handel_settings', 'product_handel_show_password_invoice', array('sanitize_callback' => 'absint'));
+        register_setting('product_handel_settings', 'product_handel_recaptcha_enabled', array('sanitize_callback' => 'absint'));
+        register_setting('product_handel_settings', 'product_handel_recaptcha_site_key', array('sanitize_callback' => 'sanitize_text_field'));
+        register_setting('product_handel_settings', 'product_handel_recaptcha_secret_key', array('sanitize_callback' => 'sanitize_text_field'));
 
         add_settings_section('ph_paypal', 'PayPal Configuration', function () {
             echo '<p>Configure your PayPal account details to accept payments.</p>';
@@ -71,6 +74,10 @@ class Product_Handel_Settings {
 
         add_settings_section('ph_email', 'Email Settings', function () {
             echo '<p>Configure how purchase emails are sent.</p>';
+        }, 'product-handel-settings');
+
+        add_settings_section('ph_recaptcha', 'reCAPTCHA v3', function () {
+            echo '<p>Protect purchase forms from bots with Google reCAPTCHA v3. <a href="https://www.google.com/recaptcha/admin" target="_blank">Get keys here</a> (choose reCAPTCHA v3).</p>';
         }, 'product-handel-settings');
 
         add_settings_section('ph_account', 'Account Creation', function () {
@@ -85,6 +92,9 @@ class Product_Handel_Settings {
         add_settings_field('test_mode', 'Test Mode', array($this, 'field_test_mode'), 'product-handel-settings', 'ph_paypal');
         add_settings_field('html_email', 'HTML Email', array($this, 'field_html_email'), 'product-handel-settings', 'ph_email');
         add_settings_field('thank_you_message', 'Thank You Message', array($this, 'field_thank_you_message'), 'product-handel-settings', 'ph_email');
+        add_settings_field('recaptcha_enabled', 'Enable reCAPTCHA', array($this, 'field_recaptcha_enabled'), 'product-handel-settings', 'ph_recaptcha');
+        add_settings_field('recaptcha_site_key', 'Site Key', array($this, 'field_recaptcha_site_key'), 'product-handel-settings', 'ph_recaptcha');
+        add_settings_field('recaptcha_secret_key', 'Secret Key', array($this, 'field_recaptcha_secret_key'), 'product-handel-settings', 'ph_recaptcha');
         add_settings_field('create_user', 'Create User Account', array($this, 'field_create_user'), 'product-handel-settings', 'ph_account');
         add_settings_field('show_password_invoice', 'Show Password on Invoice', array($this, 'field_show_password_invoice'), 'product-handel-settings', 'ph_account');
     }
@@ -149,6 +159,21 @@ class Product_Handel_Settings {
         $val = get_option('product_handel_show_password_invoice', 1);
         echo '<label><input type="checkbox" name="product_handel_show_password_invoice" value="1" ' . checked(1, $val, false) . ' /> Display the generated password on the invoice page</label>';
         echo '<p class="description">When enabled, the buyer\'s password is shown on the post-purchase invoice page. The password is also always sent via email. Only applies when "Create User Account" is enabled.</p>';
+    }
+
+    public function field_recaptcha_enabled() {
+        $val = get_option('product_handel_recaptcha_enabled', 0);
+        echo '<label><input type="checkbox" name="product_handel_recaptcha_enabled" value="1" ' . checked(1, $val, false) . ' /> Enable reCAPTCHA v3 on purchase forms</label>';
+    }
+
+    public function field_recaptcha_site_key() {
+        $val = get_option('product_handel_recaptcha_site_key', '');
+        echo '<input type="text" name="product_handel_recaptcha_site_key" value="' . esc_attr($val) . '" class="regular-text" />';
+    }
+
+    public function field_recaptcha_secret_key() {
+        $val = get_option('product_handel_recaptcha_secret_key', '');
+        echo '<input type="text" name="product_handel_recaptcha_secret_key" value="' . esc_attr($val) . '" class="regular-text" />';
     }
 
     public function render_settings_page() {
