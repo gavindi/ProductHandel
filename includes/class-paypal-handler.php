@@ -24,12 +24,21 @@ class Product_Handel_PayPal_Handler {
 
         $product_id = isset($_POST['ph_product_id']) ? intval($_POST['ph_product_id']) : 0;
 
+        // IP deny list check
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        $ip_transient_key = 'ph_blocked_' . md5($ip);
+        if ($ip && get_transient($ip_transient_key)) {
+            wp_redirect(home_url());
+            exit;
+        }
+
         if (!wp_verify_nonce($_POST['_wpnonce'] ?? '', 'ph_buy_' . $product_id)) {
             wp_die('Security check failed.');
         }
 
         // Honeypot check
         if (!empty($_POST['ph_buyer_zip'])) {
+            set_transient($ip_transient_key, 1, DAY_IN_SECONDS);
             wp_redirect(home_url());
             exit;
         }
@@ -40,20 +49,23 @@ class Product_Handel_PayPal_Handler {
         if ($recaptcha_enabled && !empty($recaptcha_secret)) {
             $recaptcha_token = sanitize_text_field($_POST['ph_recaptcha_token'] ?? '');
             if (empty($recaptcha_token)) {
+                set_transient($ip_transient_key, 1, DAY_IN_SECONDS);
                 wp_die('reCAPTCHA verification failed. Please try again.');
             }
             $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', array(
                 'body' => array(
                     'secret'   => $recaptcha_secret,
                     'response' => $recaptcha_token,
-                    'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+                    'remoteip' => $ip,
                 ),
             ));
             if (is_wp_error($response)) {
+                set_transient($ip_transient_key, 1, DAY_IN_SECONDS);
                 wp_die('reCAPTCHA verification failed. Please try again.');
             }
             $result = json_decode(wp_remote_retrieve_body($response), true);
             if (empty($result['success']) || (isset($result['score']) && $result['score'] < 0.5)) {
+                set_transient($ip_transient_key, 1, DAY_IN_SECONDS);
                 wp_die('reCAPTCHA verification failed. Please try again.');
             }
         }

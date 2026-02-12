@@ -18,6 +18,8 @@ A simple WordPress e-commerce plugin that lets you create and sell products with
 - Order management in WordPress admin (edit buyer info, resend invoices, delete test orders, CSV export)
 - Shortcode for embedding products on any page
 - Automatic database versioning and schema migration
+- Optional Google reCAPTCHA v3 bot protection on purchase forms
+- Honeypot field and automatic 24-hour IP blocking for failed bot checks
 - Block theme compatible (Twenty Twenty-Three, Twenty Twenty-Four, etc.)
 
 ## Installation
@@ -61,6 +63,8 @@ Navigate to **Settings > ProductHandel** to configure:
 - **Show Password on Invoice**: Display the generated password on the invoice page when user account creation is enabled
 - **HTML Email**: Send styled HTML emails matching the invoice page design instead of plain text
 - **Thank You Message**: Customise the message shown in purchase confirmation emails (defaults to "Thank you for your purchase.")
+- **Enable reCAPTCHA**: Toggle Google reCAPTCHA v3 on purchase forms
+- **Site Key / Secret Key**: Your reCAPTCHA v3 credentials (get them at https://www.google.com/recaptcha/admin)
 
 The settings page also displays your **IPN Listener URL** — configure this in your PayPal account under IPN notification settings.
 

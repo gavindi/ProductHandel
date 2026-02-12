@@ -2,6 +2,11 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.9.5] - 2026-02-12
+
+### Added
+- **IP deny list** — IPs that fail reCAPTCHA verification or trigger the honeypot field are automatically blocked from the purchase form for 24 hours using WordPress transients
+
 ## [1.9.4] - 2026-02-12
 
 ### Added
