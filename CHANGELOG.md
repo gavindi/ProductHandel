@@ -2,9 +2,15 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.9.1] - 2026-02-12
+
+### Security
+- **Shortcode output escaping** — All dynamic HTML attributes in the purchase form now use `esc_attr()` and JavaScript element IDs use `wp_json_encode()` for defense-in-depth XSS prevention
+- **Shortcode content filtering** — Product description rendered via the `[product_buy]` shortcode now uses `wp_kses_post()` to strip unsafe HTML tags
+
 ## [1.9.0] - 2026-02-12
 
-### Security Fixes Round 1
+### Security
 - **IPN payment amount verification** — IPN listener now verifies that the paid amount and currency match the order before marking it as completed, preventing payment amount manipulation
 - **Duplicate IPN detection** — IPN listener skips processing if the order is already completed with the same transaction ID, preventing duplicate emails and user creation from replayed notifications
 - **Encryption fallback key** — Fallback encryption key is now randomly generated and persisted in the database instead of being derived from the publicly-known site URL

@@ -62,7 +62,7 @@ class Product_Handel_Shortcode {
             <?php endif; ?>
             <h3 class="ph-title"><?php echo esc_html($product->post_title); ?></h3>
             <?php if ($description) : ?>
-                <div class="ph-description"><?php echo $description; ?></div>
+                <div class="ph-description"><?php echo wp_kses_post($description); ?></div>
             <?php endif; ?>
             <p class="ph-price"><?php echo esc_html($currency . ' ' . number_format((float)$price, 2)); ?></p>
             <p><a href="<?php echo esc_url($product_url); ?>" class="ph-buy-button" style="display:inline-block;width:100%;padding:12px;background:#0073aa;color:#fff;border-radius:4px;font-size:16px;font-weight:700;text-align:center;text-decoration:none;box-sizing:border-box;">Buy Now</a></p>
@@ -95,30 +95,30 @@ class Product_Handel_Shortcode {
                 <input type="hidden" name="ph_product_id" value="<?php echo esc_attr($product_id); ?>" />
                 <input type="hidden" name="_wpnonce" value="<?php echo esc_attr($nonce); ?>" />
                 <div class="ph-field">
-                    <label for="<?php echo $uid; ?>_first_name">First Name <span class="ph-required">*</span></label>
-                    <input type="text" id="<?php echo $uid; ?>_first_name" name="ph_buyer_first_name" required class="ph-input" />
+                    <label for="<?php echo esc_attr($uid); ?>_first_name">First Name <span class="ph-required">*</span></label>
+                    <input type="text" id="<?php echo esc_attr($uid); ?>_first_name" name="ph_buyer_first_name" required class="ph-input" />
                 </div>
                 <div class="ph-field">
-                    <label for="<?php echo $uid; ?>_last_name">Last Name <span class="ph-required">*</span></label>
-                    <input type="text" id="<?php echo $uid; ?>_last_name" name="ph_buyer_last_name" required class="ph-input" />
+                    <label for="<?php echo esc_attr($uid); ?>_last_name">Last Name <span class="ph-required">*</span></label>
+                    <input type="text" id="<?php echo esc_attr($uid); ?>_last_name" name="ph_buyer_last_name" required class="ph-input" />
                 </div>
                 <div class="ph-field">
-                    <label for="<?php echo $uid; ?>_email">Your Email <span class="ph-required">*</span></label>
-                    <input type="email" id="<?php echo $uid; ?>_email" name="ph_buyer_email" required class="ph-input" />
+                    <label for="<?php echo esc_attr($uid); ?>_email">Your Email <span class="ph-required">*</span></label>
+                    <input type="email" id="<?php echo esc_attr($uid); ?>_email" name="ph_buyer_email" required class="ph-input" />
                     <p class="ph-field-note">Your email address will be used to create your account so you can later retrieve your purchase details.</p>
                 </div>
-                <div class="ph-form-error" id="<?php echo $uid; ?>_error" style="display:none;"></div>
+                <div class="ph-form-error" id="<?php echo esc_attr($uid); ?>_error" style="display:none;"></div>
                 <button type="submit" class="ph-buy-button">Pay via Paypal</button>
             </form>
         </div>
         <script>
         (function(){
-            var form = document.getElementById('<?php echo $uid; ?>_first_name').closest('form');
+            var form = document.getElementById(<?php echo wp_json_encode($uid . '_first_name'); ?>).closest('form');
             form.addEventListener('submit', function(e){
-                var firstName = document.getElementById('<?php echo $uid; ?>_first_name').value.trim();
-                var lastName = document.getElementById('<?php echo $uid; ?>_last_name').value.trim();
-                var email = document.getElementById('<?php echo $uid; ?>_email').value.trim();
-                var err = document.getElementById('<?php echo $uid; ?>_error');
+                var firstName = document.getElementById(<?php echo wp_json_encode($uid . '_first_name'); ?>).value.trim();
+                var lastName = document.getElementById(<?php echo wp_json_encode($uid . '_last_name'); ?>).value.trim();
+                var email = document.getElementById(<?php echo wp_json_encode($uid . '_email'); ?>).value.trim();
+                var err = document.getElementById(<?php echo wp_json_encode($uid . '_error'); ?>);
                 var msgs = [];
                 if (!firstName) msgs.push('First name is required.');
                 if (!lastName) msgs.push('Last name is required.');
