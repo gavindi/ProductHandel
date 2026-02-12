@@ -45,7 +45,7 @@ class Product_Handel_Invoice_Page {
 
         // Fallback: parse URL directly if rewrite rules haven't flushed yet
         if (empty($token)) {
-            $request_uri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+            $request_uri = trim(parse_url(sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])), PHP_URL_PATH), '/');
             if (preg_match('#^invoice/([a-f0-9]{64})$#', $request_uri, $matches)) {
                 $token = $matches[1];
             }

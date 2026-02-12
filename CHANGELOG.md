@@ -2,6 +2,12 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.9.6] - 2026-02-13
+
+### Security
+- **Escape thumbnail output** — Product thumbnail in the `[product_buy]` shortcode now wrapped with `wp_kses_post()` for proper output escaping
+- **Sanitize `$_SERVER` superglobals** — `REMOTE_ADDR` in the IPN listener and PayPal handler, and `REQUEST_URI` in the invoice page fallback, are now sanitized with `sanitize_text_field(wp_unslash(...))`
+
 ## [1.9.5] - 2026-02-12
 
 ### Added

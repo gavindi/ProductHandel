@@ -29,7 +29,7 @@ class Product_Handel_IPN_Listener {
         }
 
         // Rate limiting: max 20 IPN requests per minute per IP
-        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $ip = sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
         $transient_key = 'ph_ipn_rate_' . md5($ip);
         $request_count = (int) get_transient($transient_key);
         if ($request_count >= 20) {

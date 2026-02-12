@@ -25,7 +25,7 @@ class Product_Handel_PayPal_Handler {
         $product_id = isset($_POST['ph_product_id']) ? intval($_POST['ph_product_id']) : 0;
 
         // IP deny list check
-        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        $ip = sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? ''));
         $ip_transient_key = 'ph_blocked_' . md5($ip);
         if ($ip && get_transient($ip_transient_key)) {
             wp_redirect(home_url());

@@ -58,7 +58,7 @@ class Product_Handel_Shortcode {
         ?>
         <div class="ph-buy-form">
             <?php if ($thumbnail) : ?>
-                <div class="ph-image"><?php echo $thumbnail; ?></div>
+                <div class="ph-image"><?php echo wp_kses_post($thumbnail); ?></div>
             <?php endif; ?>
             <h3 class="ph-title"><?php echo esc_html($product->post_title); ?></h3>
             <?php if ($description) : ?>
