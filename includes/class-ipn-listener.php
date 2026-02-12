@@ -22,6 +22,22 @@ class Product_Handel_IPN_Listener {
             return;
         }
 
+        // Only accept POST requests for IPN
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            status_header(405);
+            exit;
+        }
+
+        // Rate limiting: max 20 IPN requests per minute per IP
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $transient_key = 'ph_ipn_rate_' . md5($ip);
+        $request_count = (int) get_transient($transient_key);
+        if ($request_count >= 20) {
+            status_header(429);
+            exit;
+        }
+        set_transient($transient_key, $request_count + 1, 60);
+
         $raw = file_get_contents('php://input');
         if (empty($raw)) {
             status_header(400);
@@ -64,20 +80,46 @@ class Product_Handel_IPN_Listener {
 
     private function process($ipn_data) {
         $payment_status = $ipn_data['payment_status'] ?? '';
-        $txn_id         = $ipn_data['txn_id'] ?? '';
+        $txn_id         = sanitize_text_field($ipn_data['txn_id'] ?? '');
         $order_id       = intval($ipn_data['custom'] ?? 0);
-        $receiver_email = $ipn_data['receiver_email'] ?? '';
+        $receiver_email = sanitize_text_field($ipn_data['receiver_email'] ?? '');
 
         if (strcasecmp($receiver_email, get_option('product_handel_paypal_email')) !== 0) {
             return;
         }
 
+        $order = Product_Handel_Order_Manager::get_order($order_id);
+        if (!$order) {
+            return;
+        }
+
+        // Prevent duplicate transaction processing
+        if ($order->status === 'completed' && $order->transaction_id === $txn_id) {
+            return;
+        }
+
         $status = strtolower($payment_status) === 'completed' ? 'completed' : sanitize_text_field($payment_status);
+
+        // Verify payment amount and currency match the order
+        if ($status === 'completed') {
+            $paid_amount = floatval($ipn_data['mc_gross'] ?? 0);
+            $paid_currency = sanitize_text_field($ipn_data['mc_currency'] ?? '');
+
+            if ($paid_amount < floatval($order->amount)) {
+                return;
+            }
+            if (strcasecmp($paid_currency, $order->currency) !== 0) {
+                return;
+            }
+        }
+
+        // Sanitize IPN data values before encoding for storage
+        $sanitized_ipn = array_map('sanitize_text_field', $ipn_data);
 
         $update_data = array(
             'status'         => $status,
             'transaction_id' => $txn_id,
-            'payment_data'   => wp_json_encode($ipn_data),
+            'payment_data'   => wp_json_encode($sanitized_ipn),
         );
 
         // Override buyer details with PayPal's verified data on successful payment

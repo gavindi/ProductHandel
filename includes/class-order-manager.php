@@ -233,7 +233,13 @@ class Product_Handel_Order_Manager {
         if (defined('AUTH_KEY') && AUTH_KEY) {
             return hash('sha256', AUTH_KEY . 'product_handel_temp_pw', true);
         }
-        return hash('sha256', 'product_handel_fallback_key_' . get_site_url(), true);
+        // Generate and persist a random fallback key rather than deriving from the public site URL
+        $stored_key = get_option('product_handel_encryption_key');
+        if (!$stored_key) {
+            $stored_key = bin2hex(random_bytes(32));
+            add_option('product_handel_encryption_key', $stored_key, '', 'no');
+        }
+        return hash('sha256', $stored_key . 'product_handel_temp_pw', true);
     }
 
     private static function encrypt_password($plaintext) {

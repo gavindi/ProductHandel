@@ -2,6 +2,15 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.9.0] - 2026-02-12
+
+### Security Fixes Round 1
+- **IPN payment amount verification** — IPN listener now verifies that the paid amount and currency match the order before marking it as completed, preventing payment amount manipulation
+- **Duplicate IPN detection** — IPN listener skips processing if the order is already completed with the same transaction ID, preventing duplicate emails and user creation from replayed notifications
+- **Encryption fallback key** — Fallback encryption key is now randomly generated and persisted in the database instead of being derived from the publicly-known site URL
+- **IPN rate limiting** — IPN endpoint limited to 20 requests per minute per IP and restricted to POST requests only
+- **IPN data sanitization** — Transaction ID and receiver email are now sanitized at extraction; all IPN data values are sanitized before being stored as payment data
+
 ## [1.8.10] - 2026-02-11
 
 ### Changed
