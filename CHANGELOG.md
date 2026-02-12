@@ -2,6 +2,11 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.9.2] - 2026-02-12
+
+### Changed
+- **License key algorithm** — Keys now include the transaction ID in the hash, producing a unique key per purchase instead of a deterministic key per buyer
+
 ## [1.9.1] - 2026-02-12
 
 ### Security
