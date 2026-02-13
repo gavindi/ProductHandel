@@ -1,18 +1,39 @@
 <?php
 /**
  * Plugin Name: ProductHandel
+ * Plugin URI:  https://gavingraham.com/product-handel
  * Description: Simple e-commerce plugin with PayPal Standard integration. No cart — buy directly.
- * Version: 1.9.6
- * Author: Gavin Graham
- * License: GPL v2 or later
+ * Version:     1.9.7
+ * Author:      Gavin Graham
+ * Author URI:  https://gavingraham.com
+ * License:     GPL v2
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Requires at least: 6.0
+ * Requires PHP:      8.0
  * Text Domain: product-handel
  */
+
+/*
+Copyright (C) 2026 Gavin Graham
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 2 as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, see <https://www.gnu.org/licenses/>.
+*/
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-define('PRODUCT_HANDEL_VERSION', '1.9.6');
+define('PRODUCT_HANDEL_VERSION', '1.9.7');
 define('PRODUCT_HANDEL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PRODUCT_HANDEL_PLUGIN_URL', plugin_dir_url(__FILE__));
 

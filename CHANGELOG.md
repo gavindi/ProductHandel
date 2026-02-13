@@ -2,6 +2,13 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.9.7] - 2026-02-13
+
+### Changed
+- **CSS directory consolidation** — Moved `assets/css/frontend-styles.css` and `admin/css/admin-styles.css` into a single `css/` directory; updated enqueue paths and Makefile
+- **Plugin requirements** — Added `Requires at least: 6.0` and `Requires PHP: 8.0` to the plugin header
+- **README badge** — Fixed last commit badge to point to the correct repository
+
 ## [1.9.6] - 2026-02-13
 
 ### Security

@@ -10,6 +10,7 @@ build:
 	@zip -r $(BUILD_DIR)/$(PLUGIN_SLUG).zip \
 		$(PLUGIN_SLUG)/product-handel.php \
 		$(PLUGIN_SLUG)/includes/ \
+		$(PLUGIN_SLUG)/css/ \
 		$(PLUGIN_SLUG)/assets/ \
 		$(PLUGIN_SLUG)/admin/ \
 		-x "$(PLUGIN_SLUG)/build/*" "*/.*"

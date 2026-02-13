@@ -20,7 +20,7 @@ class Product_Handel_Shortcode {
     }
 
     public function enqueue_styles() {
-        wp_enqueue_style('product-handel-frontend', PRODUCT_HANDEL_PLUGIN_URL . 'assets/css/frontend-styles.css', array(), PRODUCT_HANDEL_VERSION);
+        wp_enqueue_style('product-handel-frontend', PRODUCT_HANDEL_PLUGIN_URL . 'css/frontend-styles.css', array(), PRODUCT_HANDEL_VERSION);
     }
 
     public function append_to_product($content) {

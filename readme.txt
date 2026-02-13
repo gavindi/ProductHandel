@@ -2,10 +2,6 @@
 
 A simple WordPress e-commerce plugin that lets you create and sell products with PayPal Standard integration. No shopping cart required — customers buy directly from the product page.
 
-[![License: GPLv2](https://img.shields.io/badge/License-GPLv2-blue.svg?style=flat-square)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Last Commit](https://img.shields.io/github/last-commit/gavindi/ProductHandel?style=flat-square)](https://github.com/gavindi/ProductHandel/commits/main)
----
-
 ## Features
 
 - Custom "Products" post type with price management
@@ -138,10 +134,4 @@ Admins can also:
 
 ## License
 
-License: GPLv2.
-
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
-
----
-
-If you like this plugin, a star ⭐ is appreciated!
+GPL v2

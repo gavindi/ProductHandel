@@ -44,7 +44,7 @@ class Product_Handel_Settings {
 
     public function enqueue_admin_styles($hook) {
         if (strpos($hook, 'product-handel') !== false) {
-            wp_enqueue_style('product-handel-admin', PRODUCT_HANDEL_PLUGIN_URL . 'admin/css/admin-styles.css', array(), PRODUCT_HANDEL_VERSION);
+            wp_enqueue_style('product-handel-admin', PRODUCT_HANDEL_PLUGIN_URL . 'css/admin-styles.css', array(), PRODUCT_HANDEL_VERSION);
         }
     }
 
