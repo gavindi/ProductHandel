@@ -3,7 +3,7 @@
  * Plugin Name: ProductHandel
  * Plugin URI:  https://gavingraham.com/product-handel
  * Description: Simple e-commerce plugin with PayPal Standard integration. No cart — buy directly.
- * Version:     1.9.7
+ * Version:     1.9.8
  * Author:      Gavin Graham
  * Author URI:  https://gavingraham.com
  * License:     GPL v2
@@ -33,7 +33,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('PRODUCT_HANDEL_VERSION', '1.9.7');
+define('PRODUCT_HANDEL_VERSION', '1.9.8');
 define('PRODUCT_HANDEL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PRODUCT_HANDEL_PLUGIN_URL', plugin_dir_url(__FILE__));
 

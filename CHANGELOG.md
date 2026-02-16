@@ -2,6 +2,11 @@
 
 All notable changes to ProductHandel will be documented in this file.
 
+## [1.9.8] - 2026-02-16
+
+### Fixed
+- **Honeypot blocking legitimate purchases** — Renamed honeypot field from "Zip/Post Code" (`ph_buyer_zip`) to a generic name (`ph_buyer_comment`) to prevent browser autofill and password managers from filling the field, which silently blocked the buyer's IP and redirected to the homepage
+
 ## [1.9.7] - 2026-02-13
 
 ### Changed

@@ -115,9 +115,9 @@ class Product_Handel_Shortcode {
                     <input type="email" id="<?php echo esc_attr($uid); ?>_email" name="ph_buyer_email" required class="ph-input" />
                     <p class="ph-field-note">Your email address will be used to create your account so you can later retrieve your purchase details.</p>
                 </div>
-                <div class="ph-field ph-field-zip">
-                    <label for="<?php echo esc_attr($uid); ?>_zip">Zip/Post Code</label>
-                    <input type="text" id="<?php echo esc_attr($uid); ?>_zip" name="ph_buyer_zip" class="ph-input" autocomplete="off" tabindex="-1" />
+                <div class="ph-field ph-field-zip" aria-hidden="true">
+                    <label for="<?php echo esc_attr($uid); ?>_comment">Comments</label>
+                    <input type="text" id="<?php echo esc_attr($uid); ?>_comment" name="ph_buyer_comment" class="ph-input" autocomplete="off" tabindex="-1" />
                 </div>
                 <?php if ($use_recaptcha): ?>
                 <input type="hidden" name="ph_recaptcha_token" id="<?php echo esc_attr($uid); ?>_recaptcha" value="" />

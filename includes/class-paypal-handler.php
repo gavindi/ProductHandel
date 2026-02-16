@@ -37,7 +37,7 @@ class Product_Handel_PayPal_Handler {
         }
 
         // Honeypot check
-        if (!empty($_POST['ph_buyer_zip'])) {
+        if (!empty($_POST['ph_buyer_comment'])) {
             set_transient($ip_transient_key, 1, DAY_IN_SECONDS);
             wp_redirect(home_url());
             exit;
